@@ -6,26 +6,15 @@ target 'enciendeApp' do
   # use_frameworks!
 
   # Pods for enciendeApp
+  source 'https://github.com/CocoaPods/Specs.git'
+  pod 'React', :subspecs => ['Core', 'RCTImage', 'RCTNetwork', 'RCTText', 'RCTWebSocket', 'RCTLinkingIOS'], :path => '../node_modules/react-native'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
   target 'enciendeAppTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'React', :path => '../node_modules/react-native', :subspecs => [
-      'Core',
-      'RCTActionSheet',
-      'RCTAnimation',
-      'RCTGeolocation',
-      'RCTImage',
-      'RCTLinkingIOS',
-      'RCTNetwork',
-      'RCTSettings',
-      'RCTText',
-      'RCTVibration',
-      'RCTWebSocket'
-    ]
-    pod 'RNFS', :path => '../node_modules/react-native-fs'
-    pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-    pod 'react-native-maps', :path => '../node_modules/react-native-maps'
   end
 
 end
