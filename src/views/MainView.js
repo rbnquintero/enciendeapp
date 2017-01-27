@@ -59,7 +59,7 @@ class MainView extends Component {
         openDrawerOffset={0.2}
         panOpenMask={0.2}
         tapToClose={true}
-        content={<Menu closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>}
+        content={<Menu closeDrawer={this.closeDrawer} appnavigator={this.props.appnavigator} openDrawer={this.openDrawer}/>}
         tweenHandler={(ratio) => ({
           main: { opacity:(2-ratio)/2 }
         })}

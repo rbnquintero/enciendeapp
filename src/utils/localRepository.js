@@ -2,6 +2,7 @@
 
 var store = require('react-native-simple-store');
 
+const key_saved_iglesia = "key_saved_iglesia";
 const key_saved_news = "key_saved_news";
 const key_saved_versiculos = "key_saved_versiculos";
 const key_saved_oracion = "key_saved_oracion";
@@ -20,6 +21,14 @@ var localRepository = {
     store.delete(key_saved_staff);
     store.delete(key_saved_activities_user);
     store.delete(key_selfies_to_upload);
+  },
+
+  /* IGLESIA */
+  getSavedIglesia : function() {
+    return store.get(key_saved_iglesia);
+  },
+  saveIglesia : function(iglesia) {
+    return store.save(key_saved_iglesia, iglesia);
   },
 
   /** NEWS **/

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View
+  View,
+  Navigator,
+  Platform,
 } from 'react-native';
 
 var MainView = require('./views/MainView')
@@ -27,9 +29,39 @@ class Enciende extends Component {
     }
   }
 
+  sceneConfig(route, routeStack) {
+    if(route.fromBottom!=null){
+      if(Platform.OS === 'ios') {
+        return Navigator.SceneConfigs.FloatFromBottom;
+      } else {
+        return Navigator.SceneConfigs.FloatFromBottomAndroid;
+      }
+    } else {
+      return Navigator.SceneConfigs.PushFromRight;
+    }
+  }
+
+  renderScene(route, navigator) {
+    return (
+      <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <route.component
+          appnavigator={navigator}
+          {...route.passProps}
+        />
+      </View>
+    );
+  }
+
   render() {
     return (
-      <MainView style={{flex:1}}/>
+      <Navigator
+        style={{ flex:1 }}
+        configureScene={ this.sceneConfig }
+        onDidFocus={ this.didFocus }
+        initialRoute={{ name:'AppNavigator', title:'AppNavigator', component: MainView, }}
+        renderScene={this.renderScene}
+        openDrawer={this.props.openDrawer}
+      />
     );
   }
 }
