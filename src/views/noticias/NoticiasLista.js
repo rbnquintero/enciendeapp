@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-
-var Loader = require('../common/Loader')
-var Card = require('../common/Card')
-var Header = require('../common/Header')
+import Loader from '../components/common/Loader'
+import Header from '../components/common/Header'
+import Card from '../components/common/Card'
 
 var NoticiaDetalle = require('./NoticiaDetalle')
 

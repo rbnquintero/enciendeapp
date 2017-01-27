@@ -5,8 +5,8 @@ import {
   View,
 } from 'react-native'
 
-import BackPress from '../common/BackPress';
-var NoticiasLista = require('./NoticiasLista')
+import BackPress from '../components/common/BackPress';
+import NoticiasLista from './NoticiasLista'
 
 class NoticiasMain extends Component {
 

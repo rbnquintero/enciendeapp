@@ -6,9 +6,9 @@ import {
   Time,
   View
 } from 'react-native'
-var {TextN} = require('../common/Text');
+var {TextN} = require('../components/common/Text');
+import FitImage from '../components/common/FitImage'
 
-var FitImage = require('../common/FitImage');
 import LinearGradient from 'react-native-linear-gradient';
 
 var moment = require('moment');

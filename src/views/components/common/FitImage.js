@@ -113,6 +113,4 @@ class FitImage extends Component {
   }
 }
 
-FitImage.propTypes = propTypes;
-
 module.exports = FitImage;

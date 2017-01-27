@@ -5,9 +5,8 @@ import {
   Text,
   View,
 } from 'react-native'
-
-var Header = require('../common/Header')
-var Loader = require('../common/Loader')
+import Header from '../components/common/Header';
+import Loader from '../components/common/Loader';
 
 var moment = require('moment');
 var esLocale = require('moment/locale/es');

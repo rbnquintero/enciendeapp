@@ -10,9 +10,8 @@ import {
   View,
   WebView,
 } from 'react-native'
-
-var Header = require('../common/Header')
-var SegmentoMapa = require('../common/SegmentoMapa')
+import Header from '../components/common/Header'
+import SegmentoMapa from '../components/common/SegmentoMapa'
 
 class Nosotros extends Component {
 
@@ -64,7 +63,7 @@ class Nosotros extends Component {
           <Text style={[styles.text, {marginVertical:0}]}>3703 Barclay Rd, Marydel, MD 21649-1147</Text>
           <TouchableOpacity onPress={() => this.handleClick('http://templevillespanishmd.adventistchurch.org/')}><Text style={[styles.text, {marginTop:20}]}>http://templevillespanishmd.adventistchurch.org/</Text></TouchableOpacity>
           <View style={{height:300, flex:1, marginTop:30}}>
-            <SegmentoMapa  latitud={'39.13573795263808'} longitud={'-75.77022923518251'} titulo={"Templeville Spanish SDA Church"}/>
+            <SegmentoMapa latitud={'39.13573795263808'} longitud={'-75.77022923518251'} titulo={"Templeville Spanish SDA Church"}/>
             <TouchableOpacity style={{position:'absolute', right:0}} onPress={() => this.openDirections()}>
               <View style={{backgroundColor:'rgba(255,255,255,0.85)', margin:5, borderRadius:4}}>
                 <Image source={{uri:'route', width:30, height:30, marginTop:30, marginRight:30}}/>

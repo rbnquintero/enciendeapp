@@ -5,8 +5,8 @@ import {
   Text,
   View,
 } from 'react-native'
-
-var Loader = require('../common/Loader')
+import Loader from '../components/common/Loader'
+import Header from '../components/common/Header'
 var VersiculoCard = require('./VersiculoCard')
 
 /* REDUX */
@@ -16,7 +16,6 @@ var {
   fbRendered,
 } = require('../../actions');
 
-var Header = require('../common/Header')
 class Versiculos extends Component {
   componentWillMount() {
     this.props.loadVersiculos();

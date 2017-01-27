@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 import Drawer from 'react-native-drawer'
-var Menu = require('./common/Menu');
+var Menu = require('./components/Menu');
 var NoticiasMain = require('./noticias/NoticiasMain');
 var Creencias = require('./webviews/Creencias');
 var Nosotros = require('./simplepages/Nosotros');

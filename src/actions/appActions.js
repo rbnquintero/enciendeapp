@@ -65,7 +65,6 @@ function loadIglesia() {
     return query.find({
       success: function(results) {
         var iglesias = JSON.parse(JSON.stringify(results))
-        console.log(iglesias[0])
         dispatch(appSetIglesia(iglesias[0]));
         localRepository.saveIglesia(iglesias[0]);
         dispatch(appFbInitialize());

@@ -8,10 +8,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-
+import Header from '../components/common/Header'
 var moment = require('moment')
 var esLocale = require('moment/locale/es')
-var Header = require('../common/Header')
 
 class NoticiaDetalle extends Component {
 

@@ -5,7 +5,7 @@ import {
   WebView,
 } from 'react-native'
 
-var Header = require('../common/Header')
+var Header = require('../components/common/Header')
 
 class SantaBiblia extends Component {
 
