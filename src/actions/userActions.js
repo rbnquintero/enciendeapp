@@ -1,16 +1,14 @@
 'use strict'
 
 var localRepository = require('../utils/localRepository');
+var env = require('../utils/environment');
 //var GCMServices = require('../views/utils/GCMServices');
-
-var FBLoginManager = require('NativeModules').FBLoginManager;
 
 const FBSDK = require('react-native-fbsdk');
 const {
-  AccessToken
+  AccessToken,
+  LoginManager,
 } = FBSDK;
-
-var env = require('./environment');
 
 //var staffActions = require('./staff');
 //var actividadesUser = require('./actividadesUser');
@@ -72,7 +70,7 @@ function logInError(error) {
 function logIn() {
   return function(dispatch) {
     dispatch(logInStart());
-    return FBLoginManager.logInWithReadPermissions(["public_profile","email"]).then(
+    return LoginManager.logInWithReadPermissions(["public_profile","email"]).then(
       function(result) {
         if (result.isCancelled) {
           dispatch(logInError('error al loguear usuario'));
@@ -87,6 +85,10 @@ function logIn() {
             dispatch(logInError('error al loguear usuario'));
           });
         }
+      },
+      function(error) {
+        console.log(error);
+        dispatch(logInError('error al loguear usuario'));
       }
     ).catch(error => {
       console.log(error.stack);

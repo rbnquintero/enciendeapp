@@ -6,6 +6,7 @@ const key_saved_iglesia = "key_saved_iglesia";
 const key_saved_news = "key_saved_news";
 const key_saved_versiculos = "key_saved_versiculos";
 const key_saved_oracion = "key_saved_oracion";
+const key_profile_info = "key_profile_info";
 
 const key_current_rally = "key_current_rally";
 const key_saved_staff = "key_saved_staff";
@@ -15,12 +16,26 @@ const key_subscribed_topics_gcm = "key_subscribed_topics_gcm";
 
 var localRepository = {
   /** PERFIL **/
+  getProfileFromStorage : function() {
+    return store.get(key_profile_info);
+  },
   deleteAll : function() {
     store.delete(key_profile_info);
     store.delete(key_current_rally);
     store.delete(key_saved_staff);
     store.delete(key_saved_activities_user);
     store.delete(key_selfies_to_upload);
+  },
+  saveProfileToStorage : function(profile) {
+    return store.save(key_profile_info, profile);
+  },
+
+  /** RALLY **/
+  getCurrentRally : function() {
+    return store.get(key_current_rally);
+  },
+  saveCurrentRally : function(rally) {
+    return store.save(key_current_rally, rally);
   },
 
   /* IGLESIA */

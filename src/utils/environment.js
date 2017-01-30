@@ -1,5 +1,8 @@
 var env = {
+  serverURL: 'http://app-enciende.rhcloud.com',
   facebookURL: 'https://graph.facebook.com/v2.6/',
+  facebookURI: 'me?fields=id,name,email,picture&access_token=',
+  validtoken: 'ki$59%38IO#',
   facebookAuth: 'oauth/access_token?client_id=1204063346326877&client_secret=7550bf008121f029a713ae8c9d3e695c&grant_type=client_credentials',
   facebookFeed: '884137674996645/feed?fields=id,message,link,created_time,attachments{media}&limit=25&access_token=',
   timeout: function(ms, promise) {

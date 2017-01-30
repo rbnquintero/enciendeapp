@@ -6,11 +6,14 @@ import {
   StyleSheet,
   AsyncStorage,
   Platform,
+  Text,
   View
 } from 'react-native';
-var KeyboardSpacer = require('react-native-keyboard-spacer');
-import {Text, normalize} from './common/Text';
-import {FitImage, Header, Loader} from './common'
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import {TextN, normalize} from './common/Text';
+import FitImage from './common/FitImage'
+import Header from './common/Header'
+import Loader from './common/Loader'
 
 /* REDUX */
 import type {State as User} from '../../reducers/user';
@@ -48,6 +51,19 @@ class FacebookLogin extends Component {
 
     var loginSection;
     if(!this.props.user.isLoggedIn && !this.props.user.isFetching) {
+      var error = null;
+      if(this.props.user.error!=null) {
+        error = (
+          <View style={{marginTop:20}}>
+            <Text style={[ styles.texto, { fontSize: normalize(13) }]}>
+              Ocurrió un error al iniciar sesión: {this.props.user.error}
+            </Text>
+            <Text style={[ styles.texto, { fontSize: normalize(13) }]}>
+              Por favor inténtalo nuevamente
+            </Text>
+          </View>
+        );
+      }
       // Pantalla de log in con facebook
       loginSection = (
       <View style={styles.centerAlign}>
@@ -57,6 +73,7 @@ class FacebookLogin extends Component {
         <Text style={[ styles.texto, { fontSize: normalize(16) }]}>
           Inicia sesión para conocer más sobre el Rally Enciende 2016. Descubre noticias y entérate de los próximos eventos.
         </Text>
+        {error}
         <TouchableHighlight style={ styles.button } onPress={() => this.props.logIn()}
           underlayColor='#99d9f4'>
           <View style={ styles.botonFacebook }>
@@ -127,14 +144,14 @@ class FacebookLogin extends Component {
                       icon: {uri:'x'},
                       onPress: this.props.appnavigator.pop,
                     }}/>
-                  <View style={{ alignItems: 'center', marginTop: -10}}>
+                  <View style={{ alignItems: 'center', flex:1, justifyContent:'center', marginTop: -10}}>
                     <Image source={{uri:'logo_letras'}} style={styles.logo}/>
                   </View>
                 </View>
                 <View style={{flex: 4}}>
                   {loginSection}
                 </View>
-                <KeyboardSpacer/>
+                <KeyboardSpacer />
                 {registerButton}
               </View>
             }
@@ -154,6 +171,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
+    height: 40,
     resizeMode: Image.resizeMode.contain,
   },
   logoFacebook: {

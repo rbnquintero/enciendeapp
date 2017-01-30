@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Platform } from 'react-native'
 
 class MenuLogin extends Component {
   render() {
+    var STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 20 : 25;
     const { button } = styles;
 
     var iglesia = this.props.iglesia
-    if(iglesia==null) {
+    if(iglesia==null || (this.props.user.isLoggedIn && this.props.user.isRegistered)) {
       return null;
     }
     var loginSection = null
@@ -20,16 +21,14 @@ class MenuLogin extends Component {
       );
     }
     return (
-      <View style={{flexDirection:'row'}}>
-        <View style={{backgroundColor:'rgb(75,32,127)', flex:1, paddingVertical:20, alignItems:'center'}}>
-          <View style={{alignItems:'center', marginVertical:10}}>
-            <Image source={{uri:'logo'}} style={{resizeMode:'contain', height:90, width:90}}/>
-          </View>
-          <Text style={{color:'white', textAlign:'center', fontSize:16}}>
-            {iglesia.nombre}
-          </Text>
-          {loginSection}
+      <View style={{paddingVertical: STATUS_BAR_HEIGHT, alignItems:'center', backgroundColor: 'rgb(29,30,37)'}}>
+        <View style={{alignItems:'center', marginVertical:10}}>
+          <Image source={{uri:'logo'}} style={{resizeMode:'contain', height:90, width:90}}/>
         </View>
+        <Text style={{color:'white', textAlign:'center', fontSize:16}}>
+          {iglesia.nombre}
+        </Text>
+        {loginSection}
       </View>
     );
   }

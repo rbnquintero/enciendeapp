@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Image,
   Text,
   TouchableOpacity,
+  ScrollView,
   View,
 } from 'react-native';
 import FacebookLogin from './FacebookLogin'
+import MenuItem from './MenuItem'
 import MenuLogin from './MenuLogin'
+import MenuUser from './MenuUser'
 
 /* REDUX */
 var { connect } = require('react-redux');
@@ -19,6 +23,7 @@ var {
   toOracion,
   toCalendario,
   toSamplePage,
+  logOut,
 } = require('../../actions');
 
 class Menu extends Component {
@@ -34,58 +39,101 @@ class Menu extends Component {
   render() {
     const { container, welcome } = styles;
 
+    var selected = false;
+    if(this.props.nav.pantalla === 'noticias') {
+      selected = true;
+    }
+    var noticias = (
+      <MenuItem titulo="Noticias enciende" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toNoticias();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'nosotros') {
+      selected = true;
+    }
+    var nosotros = (
+      <MenuItem titulo="¿Quienes somos?" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toNosotros();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'creencias') {
+      selected = true;
+    }
+    var creencias = (
+      <MenuItem titulo="Creencias adventistas" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCreencias();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'versiculos') {
+      selected = true;
+    }
+    var versiculos = (
+      <MenuItem titulo="Versículo del día" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toVersiculos();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'calendario') {
+      selected = true;
+    }
+    var calendario = (
+      <MenuItem titulo="Calendario" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCalendario();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'biblia') {
+      selected = true;
+    }
+    var biblia = (
+      <MenuItem titulo="Santa Biblia" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toBiblia();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'oracion') {
+      selected = true;
+    }
+    var oracion = (
+      <MenuItem titulo="Pedidos de oración" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toOracion();}}/>
+    );
+
+    var cerrar = null;
+    if(this.props.user.isRegistered) {
+      cerrar = (<MenuItem titulo="Cerrar sesión" icon={{uri:'icon_logout'}}
+                action={() => {
+                  Alert.alert(
+                    'Cerrar sesión',
+                    '¿Estas seguro de cerrar sesión?',
+                    [
+                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+                      {text: 'OK', onPress: () => {this.props.toNoticias(); this.props.logOut(this.props.navigator);}},
+                    ]
+                  )
+                }}
+              />);
+    }
+
     return (
       <View style={container}>
-        <MenuLogin iglesia={this.props.app.iglesia} goToLogIn={ this.goToLogIn.bind(this) }/>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toNoticias();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Noticias
-            </Text>
+        <MenuLogin iglesia={this.props.app.iglesia} user={this.props.user} goToLogIn={ this.goToLogIn.bind(this) }/>
+        <MenuUser iglesia={this.props.app.iglesia} user={this.props.user} goToLogIn={ this.goToLogIn.bind(this) }/>
+        <ScrollView>
+          {noticias}
+          <View style={ styles.seccionTextContainer }>
+            <Text style={ styles.seccionText }>Estudio</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toNosotros();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              ¿Quienes somos?
-            </Text>
+          {versiculos}
+          <View style={ styles.seccionTextContainer }>
+            <Text style={ styles.seccionText }>Información</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toCreencias();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Creencias Adventistas
-            </Text>
+          {nosotros}
+          {creencias}
+          {calendario}
+          <View style={ styles.seccionTextContainer }>
+            <Text style={ styles.seccionText }>Comunión</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toVersiculos();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Versículo del día
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toCalendario();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Calendario
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toBiblia();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Santa Biblia
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection:'row'}} onPress={() => {this.props.closeDrawer(); this.props.toOracion();}}>
-          <View style={{backgroundColor:'#fbf9f3', flex:1, margin:3}}>
-            <Text style={welcome}>
-              Pedidos de Oración
-            </Text>
-          </View>
-        </TouchableOpacity>
+          {biblia}
+          {oracion}
+          {cerrar}
+        </ScrollView>
       </View>
     );
   }
@@ -95,13 +143,12 @@ const styles = {
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#efe9d7',
+    backgroundColor: 'rgb(36,40,51)',
   },
   welcome: {
     fontSize: 18,
     textAlign: 'center',
-    color: 'rgb(75,32,127)',
+    color: 'white',
     margin: 10,
   },
   instructions: {
@@ -109,12 +156,17 @@ const styles = {
     color: '#333333',
     marginBottom: 5,
   },
+  seccionText: {
+    color: 'rgb(156,158,162)', fontSize: 13, },
+  seccionTextContainer: {
+    flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: 'rgb(29,30,37)',paddingHorizontal: 10, height: 20 },
 };
 
 function select(store) {
   return {
     nav: store.navReducer,
     app: store.appReducer,
+    user: store.userReducer,
   };
 }
 
@@ -128,6 +180,7 @@ function actions(dispatch) {
     toOracion: () => dispatch(toOracion()),
     toCalendario: () => dispatch(toCalendario()),
     toSamplePage: () => dispatch(toSamplePage()),
+    logOut: () => dispatch(logOut()),
   };
 }
 

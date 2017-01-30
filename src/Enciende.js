@@ -8,15 +8,12 @@ import {
 var MainView = require('./views/MainView')
 
 /* REDUX */
-import type {State as AppReducer} from './reducers/appReducer'
+var { connect } = require('react-redux')
 var {
   appInitialize,
+  fetchProfile,
+  logOut,
 } = require('./actions')
-var { connect } = require('react-redux')
-type Props = {
-  app: AppReducer;
-  appInitialize: () => void;
-}
 
 class Enciende extends Component {
   constructor(props) {
@@ -26,6 +23,11 @@ class Enciende extends Component {
   componentWillMount() {
     if(!this.props.app.initialized) {
       this.props.appInitialize()
+    }
+
+    //this.props.logOut();
+    if (!this.props.user.isLoggedIn || !this.props.user.isRegistered || !this.props.user.currentRally== null) {
+      this.props.fetchProfile();
     }
   }
 
@@ -69,12 +71,15 @@ class Enciende extends Component {
 function select(store) {
   return {
     app: store.appReducer,
+    user: store.userReducer,
   };
 }
 
 function actions(dispatch) {
   return {
     appInitialize: () => dispatch(appInitialize()),
+    fetchProfile: () => dispatch(fetchProfile()),
+    logOut: () => dispatch(logOut()),
   };
 }
 
