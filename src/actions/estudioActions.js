@@ -7,6 +7,7 @@ var Parse = require('parse/react-native')
  */
 const STUDIES_LOADING = 'STUDIES_LOADING';
 const STUDIES_LOADED = 'STUDIES_LOADED';
+const STUDIES_FETCHING = 'STUDIES_FETCHING';
 const STUDIES_LOADING_ERROR = 'STUDIES_LOADING_ERROR';
 const STUDIES_RENDERED = 'STUDIES_RENDERED';
 
@@ -16,6 +17,12 @@ const STUDIES_RENDERED = 'STUDIES_RENDERED';
 function studiesLoading() {
   return {
     type: STUDIES_LOADING,
+  };
+}
+
+function studiesFetching() {
+  return {
+    type: STUDIES_FETCHING,
   };
 }
 
@@ -46,8 +53,9 @@ function loadStudies() {
     return localRepository.getSavedStudies().then((studies) => {
       if(studies != null) {
         dispatch(studiesLoaded(studies));
+      } else {
+        dispatch(fetchStudies());
       }
-      dispatch(fetchStudies());
     });
   }
 }
@@ -55,16 +63,43 @@ function loadStudies() {
 function fetchStudies(showLoading) {
   return function(dispatch) {
     if(showLoading) {
-      dispatch(studiesLoading());
+      dispatch(studiesFetching());
     }
 
-    var Serie = Parse.Object.extend("Serie");
-    var query = new Parse.Query(Serie);
+    var Temas = Parse.Object.extend("Temas");
+    var query = new Parse.Query(Temas);
+    query.include("serie");
+    query.descending("serie.fecha");
+    query.descending("fecha");
     return query.find({
       success: function(results) {
         var studies = JSON.parse(JSON.stringify(results))
+        var seriesSet = new Set()
+        studies.forEach(function(elem, index){
+          var serie
+          for (let serieIt of seriesSet) {
+            if(serieIt['id'] == elem.serie.objectId) serie = serieIt
+          }
+          if(serie == null) {
+            serie = {
+              id:elem.serie.objectId,
+              titulo:elem.serie.nombre,
+              resumen:elem.serie.descripcion,
+              fecha:elem.serie.fecha,
+              imagen:elem.serie.imagen,
+              introduccion:elem.serie.introduccion
+            }
+          }
 
-        localRepository.saveStudies(studies);
+          var temas = serie['temas']
+          if(temas == null) temas = []
+          temas.push(elem)
+          serie['temas']=temas
+
+          seriesSet.add(serie)
+        });
+
+        localRepository.saveStudies(Array.from(seriesSet));
         dispatch(studiesLoaded(studies));
       },
       error: function(error) {

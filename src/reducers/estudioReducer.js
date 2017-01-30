@@ -23,6 +23,13 @@ function estudioReducer(state: State = initialState, action): State {
       studies: state.studies,
       pendingRendering: false,
     }
+  } else if (action.type === 'STUDIES_FETCHING') {
+      return {
+        isFetching: true,
+        error: null,
+        studies: state.studies,
+        pendingRendering: false,
+      }
   } else if (action.type === 'STUDIES_LOADING_ERROR') {
     return {
       isFetching: false,

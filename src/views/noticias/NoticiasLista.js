@@ -32,7 +32,9 @@ type Props = {
 class NoticiasLista extends Component {
   constructor(props) {
     super(props)
+  }
 
+  componentDidMount() {
     this.props.loadNews()
   }
 

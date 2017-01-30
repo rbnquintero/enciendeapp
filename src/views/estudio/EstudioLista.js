@@ -11,35 +11,38 @@ import Loader from '../components/common/Loader'
 import Header from '../components/common/Header'
 import Card from '../components/common/Card'
 
-var NoticiaDetalle = require('../noticias/NoticiaDetalle')
+var EstudioListaTemas = require('./EstudioListaTemas')
 
 /* REDUX */
 var { connect } = require('react-redux');
 var {
   studiesRendered,
   loadStudies,
+  fetchStudies,
 } = require('../../actions')
 
 class EstudioLista extends Component {
   constructor(props) {
     super(props)
+  }
 
+  componentDidMount() {
     this.props.loadStudies()
   }
 
-  _rowPressed(noticia) {
+  _rowPressed(serie) {
     this.props.navigator.push({
-      title: "Noticia",
-      name: 'NoticiaDetalle',
-      component: NoticiaDetalle,
-      passProps: {noticia: noticia}
+      title: serie.nombre,
+      name: 'EstudioListaTemas',
+      component: EstudioListaTemas,
+      passProps: {serie: serie}
     });
   }
 
   render() {
     var _this = this
     var list = null
-    if(this.props.news.news != null) {
+    if(this.props.estudio.studies != null) {
       list = (
         <ScrollView
           style={{backgroundColor: 'rgba(0,0,0,0.5)'}}
@@ -47,12 +50,12 @@ class EstudioLista extends Component {
           directionalLockEnabled={true}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.news.isFetching}
-              onRefresh={this.props.loadNews}
+              refreshing={this.props.estudio.isFetching}
+              onRefresh={this.props.fetchStudies}
               tintColor='rgba(255,255,255,0.7)'
             />
           }>
-          {this.props.news.news.map(function(result, id){
+          {this.props.estudio.studies.map(function(result, id){
             return (
               <TouchableOpacity key={id} onPress={() => _this._rowPressed(result)}>
                 <Card data={result} />
@@ -62,11 +65,11 @@ class EstudioLista extends Component {
         </ScrollView>
       )
     } else {
-      if(!this.props.news.isFetching && this.props.news.error != null) {
+      if(!this.props.estudio.isFetching && this.props.estudio.error != null) {
         list = (
           <View style={{flex: 1, alignItems: 'center', flexDirection: 'row'}}>
             <TouchableOpacity style={{flex: 1}} onPress={() => {
-              this.props.loadNews();
+              this.props.loadStudies();
             }} >
               <View style={{flex:1, alignItems: 'center'}}>
                 <Text style={{ textAlign: 'center', flex: 1 }}>Ocurrió un error al cargar las noticias.</Text>
@@ -103,12 +106,14 @@ class EstudioLista extends Component {
 function select(store) {
   return {
     news: store.newsReducer,
+    estudio: store.estudioReducer,
   };
 }
 
 function actions(dispatch) {
   return {
     loadStudies: () => dispatch(loadStudies()),
+    fetchStudies: () => dispatch(fetchStudies(true)),
     studiesRendered: () => dispatch(studiesRendered()),
   };
 }
