@@ -7,6 +7,7 @@ import {
 import Drawer from 'react-native-drawer'
 var Menu = require('./components/Menu');
 var NoticiasMain = require('./noticias/NoticiasMain');
+var EstudioMain = require('./estudio/EstudioMain');
 var Creencias = require('./webviews/Creencias');
 var Nosotros = require('./simplepages/Nosotros');
 var SantaBiblia = require('./webviews/SantaBiblia');
@@ -36,6 +37,8 @@ class MainView extends Component {
     var component = null;
     if (this.props.nav.pantalla === 'noticias') {
       component = (<NoticiasMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
+    } else if (this.props.nav.pantalla === 'estudio') {
+        component = (<EstudioMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'creencias') {
         component = (<Creencias closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'nosotros') {

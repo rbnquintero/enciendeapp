@@ -18,6 +18,7 @@ var {
   toNoticias,
   toNosotros,
   toBiblia,
+  toEstudio,
   toCreencias,
   toVersiculos,
   toOracion,
@@ -52,7 +53,15 @@ class Menu extends Component {
       selected = true;
     }
     var nosotros = (
-      <MenuItem titulo="¿Quienes somos?" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toNosotros();}}/>
+      <MenuItem titulo="¿Quienes somos?" icon={{uri:'icon_world'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toNosotros();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'estudio') {
+      selected = true;
+    }
+    var estudio = (
+      <MenuItem titulo="Estudio enciende" icon={{uri:'icon_class'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toEstudio();}}/>
     );
 
     selected = false;
@@ -60,7 +69,7 @@ class Menu extends Component {
       selected = true;
     }
     var creencias = (
-      <MenuItem titulo="Creencias adventistas" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCreencias();}}/>
+      <MenuItem titulo="Creencias adventistas" icon={{uri:'icon_church'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCreencias();}}/>
     );
 
     selected = false;
@@ -68,7 +77,7 @@ class Menu extends Component {
       selected = true;
     }
     var versiculos = (
-      <MenuItem titulo="Versículo del día" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toVersiculos();}}/>
+      <MenuItem titulo="Versículo del día" icon={{uri:'icon_sun'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toVersiculos();}}/>
     );
 
     selected = false;
@@ -76,7 +85,7 @@ class Menu extends Component {
       selected = true;
     }
     var calendario = (
-      <MenuItem titulo="Calendario" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCalendario();}}/>
+      <MenuItem titulo="Calendario" icon={{uri:'icon_calendar'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCalendario();}}/>
     );
 
     selected = false;
@@ -84,7 +93,7 @@ class Menu extends Component {
       selected = true;
     }
     var biblia = (
-      <MenuItem titulo="Santa Biblia" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toBiblia();}}/>
+      <MenuItem titulo="Santa Biblia" icon={{uri:'icon_bible'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toBiblia();}}/>
     );
 
     selected = false;
@@ -92,7 +101,7 @@ class Menu extends Component {
       selected = true;
     }
     var oracion = (
-      <MenuItem titulo="Pedidos de oración" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toOracion();}}/>
+      <MenuItem titulo="Pedidos de oración" icon={{uri:'icon_heaven'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toOracion();}}/>
     );
 
     var cerrar = null;
@@ -120,6 +129,7 @@ class Menu extends Component {
           <View style={ styles.seccionTextContainer }>
             <Text style={ styles.seccionText }>Estudio</Text>
           </View>
+          {estudio}
           {versiculos}
           <View style={ styles.seccionTextContainer }>
             <Text style={ styles.seccionText }>Información</Text>
@@ -173,6 +183,7 @@ function select(store) {
 function actions(dispatch) {
   return {
     toNoticias: () => dispatch(toNoticias()),
+    toEstudio: () => dispatch(toEstudio()),
     toCreencias: () => dispatch(toCreencias()),
     toNosotros: () => dispatch(toNosotros()),
     toBiblia: () => dispatch(toBiblia()),

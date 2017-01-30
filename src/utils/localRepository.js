@@ -4,6 +4,7 @@ var store = require('react-native-simple-store');
 
 const key_saved_iglesia = "key_saved_iglesia";
 const key_saved_news = "key_saved_news";
+const key_saved_studies = "key_saved_studies";
 const key_saved_versiculos = "key_saved_versiculos";
 const key_saved_oracion = "key_saved_oracion";
 const key_profile_info = "key_profile_info";
@@ -52,6 +53,14 @@ var localRepository = {
   },
   saveNews : function(news) {
     return store.save(key_saved_news, news);
+  },
+
+  /** STUDIES **/
+  getSavedStudies : function() {
+    return store.get(key_saved_studies);
+  },
+  saveStudies : function(studies) {
+    return store.save(key_saved_studies, studies);
   },
 
   /** PEDIDOS DE ORACIÓN **/

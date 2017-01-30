@@ -7,6 +7,7 @@ const reducers = combineReducers({
   navReducer: require('./navReducer'),
   userReducer: require('./userReducer'),
   newsReducer: require('./newsReducer'),
+  estudioReducer: require('./estudioReducer'),
   facebookReducer: require('./facebookReducer'),
   oracionReducer: require('./oracionReducer'),
 });
