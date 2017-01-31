@@ -48,6 +48,17 @@ function estudioReducer(state: State = initialState, action): State {
       studies: studies,
       pendingRendering: true,
     }
+  } else if (action.type === 'PREGUNTAS_LOADED') {
+    var studies = action.studies;
+    if(studies == null) {
+      studies = state.studies;
+    }
+    return {
+      isFetching: state.isFetching,
+      error: state.error,
+      studies: studies,
+      pendingRendering: state.pendingRendering,
+    }
   } else if (action.type === 'STUDIES_RENDERED') {
     var studies = action.studies;
     if(studies == null) {

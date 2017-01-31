@@ -7,6 +7,7 @@ var Parse = require('parse/react-native')
  */
 const STUDIES_LOADING = 'STUDIES_LOADING';
 const STUDIES_LOADED = 'STUDIES_LOADED';
+const PREGUNTAS_LOADED = 'PREGUNTAS_LOADED';
 const STUDIES_FETCHING = 'STUDIES_FETCHING';
 const STUDIES_LOADING_ERROR = 'STUDIES_LOADING_ERROR';
 const STUDIES_RENDERED = 'STUDIES_RENDERED';
@@ -46,6 +47,13 @@ function studiesLoaded(studies) {
   };
 }
 
+function preguntasLoaded(studies) {
+  return {
+    type: PREGUNTAS_LOADED,
+    studies: studies,
+  };
+}
+
 function loadStudies() {
   return function(dispatch) {
     dispatch(studiesLoading());
@@ -75,6 +83,7 @@ function fetchStudies(showLoading) {
       success: function(results) {
         var studies = JSON.parse(JSON.stringify(results))
         var seriesSet = new Set()
+        var temasIds = []
         studies.forEach(function(elem, index){
           var serie
           for (let serieIt of seriesSet) {
@@ -93,14 +102,18 @@ function fetchStudies(showLoading) {
 
           var temas = serie['temas']
           if(temas == null) temas = []
+          elem['preguntas'] = []
           temas.push(elem)
           serie['temas']=temas
+
+          temasIds.push(elem.objectId)
 
           seriesSet.add(serie)
         });
 
         localRepository.saveStudies(Array.from(seriesSet));
-        dispatch(studiesLoaded(studies));
+        dispatch(studiesLoaded(Array.from(seriesSet)));
+        dispatch(fetchPreguntas(temasIds));
       },
       error: function(error) {
         console.log(error.stack)
@@ -109,6 +122,40 @@ function fetchStudies(showLoading) {
     }).catch(error => {
       console.log(error.stack);
       dispatch(studiesLoadingError('servicio no disponible'));
+    });
+  }
+}
+
+function fetchPreguntas(temasIds) {
+  return function(dispatch, getState) {
+    const { estudioReducer } = getState()
+    var Preguntas = Parse.Object.extend("Preguntas");
+    var query = new Parse.Query(Preguntas);
+    //query.containedIn("tema.objectId", temasIds);
+    query.ascending("tema");
+    query.ascending("order");
+    return query.find({
+      success: function(results) {
+        var preguntas = JSON.parse(JSON.stringify(results))
+        var series = estudioReducer.studies
+        series.forEach(function(serie,indexS){
+          serie.temas.forEach(function(tema,indexT){
+            preguntas.forEach(function(pregunta,indexP){
+              if(pregunta.tema.objectId == tema.objectId) {
+                tema.preguntas.push(pregunta)
+              }
+            });
+          });
+        });
+
+        localRepository.saveStudies(series);
+        dispatch(preguntasLoaded(series));
+      },
+      error: function(error) {
+        console.log(error.stack)
+      }
+    }).catch(error => {
+      console.log(error.stack);
     });
   }
 }

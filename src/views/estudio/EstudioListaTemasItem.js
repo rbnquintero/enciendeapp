@@ -11,7 +11,6 @@ import {
 class EstudioListaTemasItem extends Component {
 
   render() {
-    console.log(this)
     var container = styles.container;
     var text = styles.text;
     if(this.props.selected) {

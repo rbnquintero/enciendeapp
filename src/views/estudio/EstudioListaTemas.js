@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     resizeMode: Image.resizeMode.contain,
   },
   newscontainerTexto: {
-    marginVertical: 25,
     fontSize: 13,
     fontWeight: '300'
   },

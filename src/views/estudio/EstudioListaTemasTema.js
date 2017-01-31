@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
@@ -47,8 +48,20 @@ class EstudioListaTemasTema extends Component {
               </LinearGradient>
             }/>
           </View>
-          <View style={{ marginHorizontal: 20 }}>
-            <Text style={styles.newscontainerTexto}>{tema.serie.introduccion}</Text>
+          <View style={{ marginHorizontal: 20, marginTop: 20 }}>
+            <Text style={styles.newscontainerTexto}>{tema.contenido}</Text>
+            {tema.preguntas.map(function(result, id){
+              return (
+                <View key={id} style={{marginTop:15}}>
+                  <Text style={styles.newscontainerTexto}>{result.texto}</Text>
+                  <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
+                  <TextInput multiline={true} style={styles.respuestaBox}/>
+                  <TouchableOpacity>
+                    <Text style={styles.comentar}>Comentar</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
             <View style={{height:35}}/>
           </View>
         </ScrollView>
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
   newscontainerTitulo: {
     marginTop: 20,
     fontWeight: 'bold',
-    color: 'rgba(0,0,0,0.6)',
+    color: '#eaeaea',
     textAlign: 'left',
     fontSize: 13,
   },
@@ -93,10 +106,23 @@ const styles = StyleSheet.create({
     resizeMode: Image.resizeMode.contain,
   },
   newscontainerTexto: {
-    marginVertical: 25,
     fontSize: 13,
     fontWeight: '300'
   },
+  newscontainerPregunta: {
+    fontSize: 13,
+    marginBottom: 10,
+    marginTop: 5
+  },
+  respuestaBox: {
+    height: 80, flex:1, borderColor:'#cccccc',borderWidth: 1,borderRadius: 4, padding:7
+  },
+  comentar: {
+    fontSize: 13,
+    textAlign: 'right',
+    flex: 1,
+    color: 'rgb(75,32,127)'
+  }
 })
 
 module.exports = EstudioListaTemasTema
