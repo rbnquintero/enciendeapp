@@ -2,6 +2,7 @@
 
 var localRepository = require('../utils/localRepository');
 var env = require('../utils/environment');
+var Parse = require('parse/react-native')
 //var GCMServices = require('../views/utils/GCMServices');
 
 const FBSDK = require('react-native-fbsdk');
@@ -138,7 +139,7 @@ function fetchProfile() {
     dispatch(updateProfileStart());
     return localRepository.getProfileFromStorage().then((profile) => {
       if(profile != null) {
-        if(profile.userData != null) {
+        if(profile.userData != null && false) {
           dispatch(loadCurrentRally(profile, true));
           //dispatch(staffActions.loadStaff(profile));
         } else {
@@ -175,6 +176,37 @@ function loadFbData(user, loadUserDataFlag) {
 function loadUserData(user) {
   return function(dispatch) {
     dispatch(logInStart());
+
+    var Usuario = Parse.Object.extend("Usuario");
+    var query = new Parse.Query(Usuario);
+    query.equalTo("id_facebook", user.fbData.id);
+    return query.find({
+      success: function(results) {
+        var usuarios = JSON.parse(JSON.stringify(results))
+        var usuario = null
+        
+        if(usuarios.length > 0) {
+          usuario = usuarios[0]
+        } else {
+          usuario = new Usuario();
+          usuario.set("nombre", user.fbData.name)
+          usuario.set("id_facebook", user.fbData.id)
+          usuario.set("email", user.fbData.email)
+          usuario.save()
+        }
+        user['userData'] = usuario;
+        localRepository.saveProfileToStorage(user);
+        dispatch(updateProfileFinish(user));
+      },
+      error: function(error) {
+        console.log(error.stack)
+        dispatch(updateProfileFinish(user));
+      }
+    }).catch(error => {
+      console.log(error.stack);
+      dispatch(updateProfileFinish(user));
+    });
+    /*
     var query = env.serverURL + '/usuario/get/' + user.token;
     return fetch(query)
       .then(response => response.json())
@@ -191,6 +223,7 @@ function loadUserData(user) {
         console.log(error.stack);
         dispatch(logInError('error al obtener info usuario'))
       });
+      */
   }
 }
 

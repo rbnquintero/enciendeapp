@@ -48,6 +48,7 @@ class Enciende extends Component {
       <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <route.component
           appnavigator={navigator}
+          callback={route.callback}
           {...route.passProps}
         />
       </View>

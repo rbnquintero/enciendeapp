@@ -48,7 +48,8 @@ class EstudioMain extends Component {
         configureScene={ this.sceneConfig }
         initialRoute={{ name:'Inicio', title:'Inicio', component: EstudioLista }}
         renderScene={ this.routeMapper }
-        openDrawer={this.props.openDrawer}/>
+        openDrawer={this.props.openDrawer}
+        goToLogIn={this.props.goToLogIn}/>
     )
   }
 }

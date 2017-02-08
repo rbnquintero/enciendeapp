@@ -7,7 +7,7 @@ class MenuLogin extends Component {
     const { button } = styles;
 
     var iglesia = this.props.iglesia
-    if(iglesia==null || (this.props.user.isLoggedIn && this.props.user.isRegistered)) {
+    if(iglesia==null || this.props.user.isLoggedIn) {
       return null;
     }
     var loginSection = null

@@ -5,6 +5,8 @@ import {
   View
 } from 'react-native';
 import Drawer from 'react-native-drawer'
+var FacebookLogin = require('./components/FacebookLogin')
+
 var Menu = require('./components/Menu');
 var NoticiasMain = require('./noticias/NoticiasMain');
 var EstudioMain = require('./estudio/EstudioMain');
@@ -32,13 +34,23 @@ class MainView extends Component {
     this._drawer.open()
   }
 
+  goToLogIn = (callback) => {
+    this.props.appnavigator.push({
+      title: "Inicio de Sesión",
+      name: 'LogIn',
+      component: FacebookLogin,
+      fromBottom: true,
+      callback: callback
+    });
+  }
+
   render() {
 
     var component = null;
     if (this.props.nav.pantalla === 'noticias') {
       component = (<NoticiasMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'estudio') {
-        component = (<EstudioMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
+        component = (<EstudioMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer} goToLogIn={this.goToLogIn}/>)
     } else if (this.props.nav.pantalla === 'creencias') {
         component = (<Creencias closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'nosotros') {

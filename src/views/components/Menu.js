@@ -28,12 +28,13 @@ var {
 } = require('../../actions');
 
 class Menu extends Component {
-  goToLogIn() {
+  goToLogIn(callback) {
     this.props.appnavigator.push({
       title: "Inicio de Sesión",
       name: 'LogIn',
       component: FacebookLogin,
       fromBottom: true,
+      callback: callback
     });
   }
 
@@ -105,7 +106,7 @@ class Menu extends Component {
     );
 
     var cerrar = null;
-    if(this.props.user.isRegistered) {
+    if(this.props.user.isLoggedIn) {
       cerrar = (<MenuItem titulo="Cerrar sesión" icon={{uri:'icon_logout'}}
                 action={() => {
                   Alert.alert(

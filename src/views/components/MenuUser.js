@@ -8,11 +8,12 @@ class MenuUser extends Component {
     const { button } = styles;
 
     var iglesia = this.props.iglesia
-    if(iglesia==null || !this.props.user.isLoggedIn || !this.props.user.isRegistered) {
+    if(iglesia==null || !this.props.user.isLoggedIn) {
       return null;
     }
 
     var userSection=null
+    var infoRally = null
     if(this.props.user.isLoggedIn){
       var pictureUri = this.props.user.fbData.picture.data.url;
       pictureUri = 'https://graph.facebook.com/v2.6/' + this.props.user.fbData.id + '/picture?height=200&access_token=' + this.props.user.token;

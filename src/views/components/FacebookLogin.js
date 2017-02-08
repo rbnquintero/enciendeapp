@@ -41,8 +41,11 @@ class FacebookLogin extends Component {
   }
 
   componentDidUpdate() {
-    if(this.props.user.isLoggedIn && this.props.user.isRegistered && !this.props.user.isFetching) {
+    if(this.props.user.isLoggedIn && !this.props.user.isFetching) {
       this.props.appnavigator.pop();
+      if(typeof this.props.callback != 'undefined') {
+        this.props.callback()
+      }
     }
   }
 
@@ -86,7 +89,7 @@ class FacebookLogin extends Component {
       </View>);
     } else if (this.props.user.isLoggedIn && !this.props.user.isFetching) {
       // Pantalla de registro de código
-      if(!this.props.user.isRegistered) {
+      if(!this.props.user.isRegistered && false) {
         loginSection = (
           <View style={[ styles.centerAlign ]}>
             <Text style={[ styles.texto, { fontSize: normalize(16) }]}>

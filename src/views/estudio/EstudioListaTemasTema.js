@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -16,7 +17,44 @@ var esLocale = require('moment/locale/es')
 var FitImage = require('../components/common/FitImage');
 import LinearGradient from 'react-native-linear-gradient';
 
+/* REDUX */
+var { connect } = require('react-redux');
+var {
+  saveUserComment,
+  saveUserCommentLocally,
+} = require('../../actions');
+
 class EstudioListaTemasTema extends Component {
+  state = { comments:this.props.estudio.comments }
+
+  changeValue(id, value) {
+    var comments = this.state.comments
+    comments[id]=value
+    this.props.saveUserCommentLocally(id, value)
+    if(this.props.user.isLoggedIn){
+      this.props.saveUserComment(id)
+    }
+    this.setState({comments: comments})
+  }
+
+  postComment(id) {
+    this.props.saveUserComment(id)
+  }
+
+  tryComment(id) {
+    if(this.props.user.isLoggedIn) {
+      this.postComment(id)
+    } else {
+      Alert.alert(
+        'Comentar',
+        'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+          {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
+        ]
+      )
+    }
+  }
 
   render() {
     var width = Dimensions.get('window').height;
@@ -24,6 +62,7 @@ class EstudioListaTemasTema extends Component {
     var tema = this.props.tema;
     var fecha = new Date(tema.fecha.iso);
     var fechaStr = moment(fecha).locale("es", esLocale).format('LL');
+    var _this = this;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -55,13 +94,13 @@ class EstudioListaTemasTema extends Component {
                 <View key={id} style={{marginTop:15}}>
                   <Text style={styles.newscontainerTexto}>{result.texto}</Text>
                   <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
-                  <TextInput multiline={true} style={styles.respuestaBox}/>
-                  <TouchableOpacity>
+                  <TextInput value={this.state.comments[result.objectId]} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
+                  <TouchableOpacity onPress={this.tryComment.bind(this, result.objectId)}>
                     <Text style={styles.comentar}>Comentar</Text>
                   </TouchableOpacity>
                 </View>
               );
-            })}
+            }, this)}
             <View style={{height:35}}/>
           </View>
         </ScrollView>
@@ -119,10 +158,25 @@ const styles = StyleSheet.create({
   },
   comentar: {
     fontSize: 13,
+    marginTop:3,
     textAlign: 'right',
     flex: 1,
     color: 'rgb(75,32,127)'
   }
 })
 
-module.exports = EstudioListaTemasTema
+function select(store) {
+  return {
+    user: store.userReducer,
+    estudio: store.estudioReducer,
+  };
+}
+
+function actions(dispatch) {
+  return {
+    saveUserComment: (id) => dispatch(saveUserComment(id)),
+    saveUserCommentLocally: (id, comment) => dispatch(saveUserCommentLocally(id, comment))
+  };
+}
+
+module.exports = connect(select, actions)(EstudioListaTemasTema);

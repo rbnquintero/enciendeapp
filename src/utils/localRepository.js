@@ -8,6 +8,7 @@ const key_saved_studies = "key_saved_studies";
 const key_saved_versiculos = "key_saved_versiculos";
 const key_saved_oracion = "key_saved_oracion";
 const key_profile_info = "key_profile_info";
+const key_saved_comments = "key_saved_comments";
 
 const key_current_rally = "key_current_rally";
 const key_saved_staff = "key_saved_staff";
@@ -61,6 +62,14 @@ var localRepository = {
   },
   saveStudies : function(studies) {
     return store.save(key_saved_studies, studies);
+  },
+
+  /** COMMENTS **/
+  getSavedComments : function() {
+    return store.get(key_saved_comments);
+  },
+  saveComments : function(comments) {
+    return store.save(key_saved_comments, comments);
   },
 
   /** PEDIDOS DE ORACIÓN **/
