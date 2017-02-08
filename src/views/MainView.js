@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  StatusBar,
   StyleSheet,
   Text,
   View
@@ -68,22 +69,29 @@ class MainView extends Component {
     }
 
     return (
-      <Drawer
-        ref={c => this._drawer = c}
-        type="overlay"
-        openDrawerOffset={0.2}
-        panOpenMask={0.2}
-        tapToClose={true}
-        initializeOpen={false}
-        content={<Menu closeDrawer={this.closeDrawer} appnavigator={this.props.appnavigator} openDrawer={this.openDrawer}/>}
-        tweenHandler={(ratio) => ({
-          main: { opacity:(2-ratio)/2 }
-        })}
-        >
-        <View style={{flex:1}}>
-          {component}
-        </View>
-      </Drawer>
+      <View style={{flex:1}}>
+        <StatusBar
+          translucent={true}
+          backgroundColor="rgba(0, 0, 0, 0.2)"
+          barStyle="light-content"
+         />
+        <Drawer
+          ref={c => this._drawer = c}
+          type="overlay"
+          openDrawerOffset={0.2}
+          panOpenMask={0.2}
+          tapToClose={true}
+          initializeOpen={false}
+          content={<Menu closeDrawer={this.closeDrawer} appnavigator={this.props.appnavigator} openDrawer={this.openDrawer}/>}
+          tweenHandler={(ratio) => ({
+            main: { opacity:(2-ratio)/2 }
+          })}
+          >
+          <View style={{flex:1}}>
+            {component}
+          </View>
+        </Drawer>
+      </View>
     );
   }
 }

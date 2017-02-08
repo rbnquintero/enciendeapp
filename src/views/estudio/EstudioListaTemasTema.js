@@ -36,7 +36,7 @@ class EstudioListaTemasTema extends Component {
 
   changeValue(id, value) {
     var comments = this.state.comments
-    comments[id]=value
+    comments[id]={'comentario':value, 'fecha': new Date()}
     this.props.saveUserCommentLocally(id, value)
     if(this.props.user.isLoggedIn){
       this.props.saveUserComment(id)
@@ -58,17 +58,20 @@ class EstudioListaTemasTema extends Component {
   }
 
   tryComment(id) {
-    if(this.props.user.isLoggedIn) {
-      this.postComment(id)
-    } else {
-      Alert.alert(
-        'Comentar',
-        'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
-        [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
-          {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
-        ]
-      )
+    console.log(this.state.comments[id])
+    if(this.state.comments[id] != null && this.state.comments[id].comentario.length > 0) {
+      if(this.props.user.isLoggedIn) {
+        this.postComment(id)
+      } else {
+        Alert.alert(
+          'Comentar',
+          'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
+          [
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+            {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
+          ]
+        )
+      }
     }
   }
 
@@ -108,11 +111,13 @@ class EstudioListaTemasTema extends Component {
               var commentsSize = 0
               var comments = this.props.estudio.commentsPeople.get(result.objectId)
               if(typeof comments != 'undefined') { commentsSize = comments.size }
+              var comentario = this.state.comments[result.objectId]!= null ? this.state.comments[result.objectId].comentario : ''
+
               return (
                 <View key={id} style={{marginTop:15}}>
                   <Text style={styles.newscontainerTexto}>{result.texto}</Text>
                   <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
-                  <TextInput value={this.state.comments[result.objectId].comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
+                  <TextInput value={comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
                   <View style={{flexDirection:'row'}}>
                     <TouchableOpacity style={{flex:1}} onPress={this.comments.bind(this, result)}>
                       <Text style={styles.vercomentarios}>Ver comentarios ({commentsSize})</Text>

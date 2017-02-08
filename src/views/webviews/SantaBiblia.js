@@ -13,7 +13,7 @@ class SantaBiblia extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Header
-          title="SantaBiblia"
+          title="Biblia"
           leftItem={{
             layout: 'icon',
             title: 'Menu',
@@ -21,7 +21,7 @@ class SantaBiblia extends Component {
             onPress: this.props.openDrawer,
           }}/>
         <WebView
-          source={{uri: 'http://biblewebapp.com/study/?v1=GN1_1&t1=fcbh%3Arvg&w1=bible'}}
+          source={{uri: 'http://biblewebapp.com/study/?v1=GN1_1&t1=fcbh%3Asev&w1=bible'}}
           style={{flex: 1}}
         />
       </View>

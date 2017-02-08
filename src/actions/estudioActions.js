@@ -185,13 +185,16 @@ function fetchPreguntas(temasIds) {
 }
 
 function fetchComments() {
-  return function(dispatch) {
+  return function(dispatch, getState) {
+    const { userReducer } = getState();
     return localRepository.getSavedComments().then((comments) => {
       if(comments == null) {
         comments = {}
       }
       dispatch(updateComments(comments));
-      dispatch(fetchCommentsFromCloud());
+      if (userReducer.isLoggedIn) {
+        dispatch(fetchCommentsFromCloud());
+      }
     });
   }
 }

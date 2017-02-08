@@ -1,23 +1,15 @@
 import React, { Component } from 'react'
 import {
-  ActivityIndicatorIOS,
-  Platform,
-  ProgressBarAndroid
+  ActivityIndicator,
+  Platform
 } from 'react-native'
 
 class LoaderSmall extends Component {
 
   render() {
-
-    if(Platform.OS === 'ios') {
-      return (
-        <ActivityIndicatorIOS/>
-      )
-    } else {
-      return (
-        <ProgressBarAndroid/>
-      )
-    }
+    return (
+      <ActivityIndicator/>
+    )
   }
 }
 

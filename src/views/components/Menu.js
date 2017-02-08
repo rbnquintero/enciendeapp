@@ -95,7 +95,7 @@ class Menu extends Component {
       selected = true;
     }
     var biblia = (
-      <MenuItem titulo="Santa Biblia" icon={{uri:'icon_bible'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toBiblia();}}/>
+      <MenuItem titulo="Biblia" icon={{uri:'icon_bible'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toBiblia();}}/>
     );
 
     selected = false;
