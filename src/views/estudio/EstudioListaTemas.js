@@ -51,14 +51,14 @@ class EstudioListaTemas extends Component {
               <LinearGradient
                 locations={[0,0.6]}
                 colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.5)',]}
-                style={{backgroundColor: 'rgba(0,0,0,0)', paddingHorizontal: 20}}>
+                style={{backgroundColor: 'rgba(0,0,0,0)', paddingHorizontal: 10}}>
                 <Text style={styles.newscontainerTitulo}>{serie.titulo}</Text>
                 <Text style={styles.newscontainerResumen}>{serie.resumen}</Text>
                 <Text style={styles.newscontainerDate}>{fechaStr}</Text>
               </LinearGradient>
             }/>
           </View>
-          <View style={{ marginHorizontal: 20 }}>
+          <View style={{ marginHorizontal: 10 }}>
             <View style={{marginVertical:10}}>
               {this.props.serie.temas.map(function(result, id){
                 return (

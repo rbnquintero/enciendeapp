@@ -13,6 +13,9 @@ import {
 import Header from '../components/common/Header'
 import SegmentoMapa from '../components/common/SegmentoMapa'
 
+/* REDUX */
+var { connect } = require('react-redux');
+
 class Nosotros extends Component {
 
   handleClick(url) {
@@ -25,14 +28,12 @@ class Nosotros extends Component {
     });
   };
 
-  openDirections() {
-    var latitud = '39.13573795263808';
-    var longitud = '-75.77022923518251';
+  openDirections(lat, lon) {
     var platform = 'google';
     if(Platform.OS === 'ios') {
       platform = 'apple';
     }
-    var directions = 'http://maps.' + platform + '.com/?daddr=' + latitud + ',' + longitud + '&dirflg=d&t=m'
+    var directions = 'http://maps.' + platform + '.com/?daddr=' + lat + ',' + lon + '&dirflg=d&t=m'
     Linking.canOpenURL(directions).then(supported => {
       if (supported) {
         Linking.openURL(directions);
@@ -43,6 +44,7 @@ class Nosotros extends Component {
   }
 
   render() {
+    var iglesia = this.props.app.iglesia
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -54,17 +56,20 @@ class Nosotros extends Component {
             onPress: this.props.openDrawer,
           }}/>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.welcome}>Templeville Spanish SDA Church</Text>
-          <Text style={styles.text}>Welcome to the Templeville Spanish SDA Church in Marydel, MD. We are a Christian community and would love to have you join our family. To learn more about what we believe you can visit our About Us page. Please join us for Bible study, worship, and prayer.</Text>
-          <Text style={[styles.text, {color: 'rgb(75,32,127)'}]}>Services:</Text>
-          <Text style={[styles.text, {marginVertical:0}]}>Sabath School 9:15 am</Text>
-          <Text style={[styles.text, {marginVertical:0}]}>Worship Service 11:00 am</Text>
+          <Text style={styles.welcome}>{iglesia.nombre}</Text>
+          <Text style={styles.text}>{iglesia.descripcion}</Text>
+          <Text style={[styles.text, {color: 'rgb(75,32,127)'}]}>Servicios:</Text>
+          {iglesia.servicios.split(',').map(function(elem,index){
+            return (
+              <Text key={index} style={[styles.text, {marginVertical:0}]}>{elem}</Text>
+            );
+          }, this)}
           <Text style={[styles.text,{color: 'rgb(75,32,127)',marginTop:20}]}>Address:</Text>
-          <Text style={[styles.text, {marginVertical:0}]}>3703 Barclay Rd, Marydel, MD 21649-1147</Text>
-          <TouchableOpacity onPress={() => this.handleClick('http://templevillespanishmd.adventistchurch.org/')}><Text style={[styles.text, {marginTop:20}]}>http://templevillespanishmd.adventistchurch.org/</Text></TouchableOpacity>
+          <Text style={[styles.text, {marginVertical:0}]}>{iglesia.direccion}</Text>
+          <TouchableOpacity onPress={() => this.handleClick(iglesia.url)}><Text style={[styles.text, {marginTop:20}]}>{iglesia.url}</Text></TouchableOpacity>
           <View style={{height:300, flex:1, marginTop:30}}>
-            <SegmentoMapa latitud={'39.13573795263808'} longitud={'-75.77022923518251'} titulo={"Templeville Spanish SDA Church"}/>
-            <TouchableOpacity style={{position:'absolute', right:0}} onPress={() => this.openDirections()}>
+            <SegmentoMapa latitud={iglesia.lat} longitud={iglesia.lon} titulo={iglesia.nombre}/>
+            <TouchableOpacity style={{position:'absolute', right:0}} onPress={() => this.openDirections(iglesia.lat,iglesia.lon)}>
               <View style={{backgroundColor:'rgba(255,255,255,0.85)', margin:5, borderRadius:4}}>
                 <Image source={{uri:'route', width:30, height:30, marginTop:30, marginRight:30}}/>
               </View>
@@ -91,4 +96,10 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = Nosotros
+function select(store) {
+  return {
+    app: store.appReducer,
+  };
+}
+
+module.exports = connect(select)(Nosotros);

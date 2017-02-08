@@ -6,8 +6,9 @@ export type State = {
   error: ?string;
   studies: ?Object;
   comments: ?Object;
-  commentPosting: boolean,
-  pendingRendering: boolean,
+  commentPosting: boolean;
+  commentsPeople: ?Object;
+  pendingRendering: boolean;
 };
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   studies: null,
   comments: {},
   commentPosting: false,
+  commentsPeople: new Map(),
   pendingRendering: false,
 };
 
@@ -27,6 +29,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: state.studies,
       comments: state.comments,
       commentPosting: state.commentPosting,
+      commentsPeople: state.commentsPeople,
       pendingRendering: false,
     }
   } else if (action.type === 'STUDIES_FETCHING') {
@@ -36,6 +39,7 @@ function estudioReducer(state: State = initialState, action): State {
         studies: state.studies,
         comments: state.comments,
         commentPosting: state.commentPosting,
+        commentsPeople: state.commentsPeople,
         pendingRendering: false,
       }
   } else if (action.type === 'STUDIES_LOADING_ERROR') {
@@ -45,6 +49,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: state.studies,
       comments: state.comments,
       commentPosting: state.commentPosting,
+      commentsPeople: state.commentsPeople,
       pendingRendering: false,
     }
   } else if (action.type === 'STUDIES_LOADED') {
@@ -58,6 +63,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: studies,
       comments: state.comments,
       commentPosting: state.commentPosting,
+      commentsPeople: state.commentsPeople,
       pendingRendering: true,
     }
   } else if (action.type === 'PREGUNTAS_LOADED') {
@@ -71,6 +77,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: studies,
       comments: state.comments,
       commentPosting: state.commentPosting,
+      commentsPeople: state.commentsPeople,
       pendingRendering: state.pendingRendering,
     }
   } else if (action.type === 'STUDIES_RENDERED') {
@@ -84,6 +91,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: studies,
       comments: state.comments,
       commentPosting: state.commentPosting,
+      commentsPeople: state.commentsPeople,
       pendingRendering: false,
     }
   } else if (action.type === 'COMMENT_UPDATE') {
@@ -93,6 +101,7 @@ function estudioReducer(state: State = initialState, action): State {
       studies: state.studies,
       comments: action.comments,
       commentPosting: false,
+      commentsPeople: state.commentsPeople,
       pendingRendering: state.pendingRendering,
     }
   } else if (action.type === 'COMMENT_POSTING') {
@@ -102,6 +111,17 @@ function estudioReducer(state: State = initialState, action): State {
       studies: state.studies,
       comments: state.comments,
       commentPosting: true,
+      commentsPeople: state.commentsPeople,
+      pendingRendering: state.pendingRendering,
+    }
+  } else if (action.type === 'COMMENTS_PEOPLE_UPDATE') {
+    return {
+      isFetching: state.isFetching,
+      error: state.error,
+      studies: state.studies,
+      comments: state.comments,
+      commentPosting: state.commentPosting,
+      commentsPeople: action.commentsPeople,
       pendingRendering: state.pendingRendering,
     }
   }

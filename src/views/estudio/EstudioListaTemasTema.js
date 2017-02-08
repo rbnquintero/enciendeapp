@@ -13,6 +13,7 @@ import {
 import Header from '../components/common/Header'
 var moment = require('moment')
 var esLocale = require('moment/locale/es')
+import EstudioListaTemasTemaComentarios from './EstudioListaTemasTemaComentarios'
 
 var FitImage = require('../components/common/FitImage');
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,10 +23,16 @@ var { connect } = require('react-redux');
 var {
   saveUserComment,
   saveUserCommentLocally,
+  fetchOtherUsersComments,
 } = require('../../actions');
 
 class EstudioListaTemasTema extends Component {
   state = { comments:this.props.estudio.comments }
+
+  componentDidMount() {
+    var tema = this.props.tema
+    this.props.fetchOtherUsersComments(tema.serie.objectId,tema.objectId)
+  }
 
   changeValue(id, value) {
     var comments = this.state.comments
@@ -39,6 +46,15 @@ class EstudioListaTemasTema extends Component {
 
   postComment(id) {
     this.props.saveUserComment(id)
+  }
+
+  comments(pregunta) {
+    this.props.navigator.push({
+      title: 'Pregunta',
+      name: 'EstudioListaTemasTema',
+      component: EstudioListaTemasTemaComentarios,
+      passProps: {pregunta: pregunta}
+    });
   }
 
   tryComment(id) {
@@ -62,7 +78,6 @@ class EstudioListaTemasTema extends Component {
     var tema = this.props.tema;
     var fecha = new Date(tema.fecha.iso);
     var fechaStr = moment(fecha).locale("es", esLocale).format('LL');
-    var _this = this;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -80,24 +95,32 @@ class EstudioListaTemasTema extends Component {
               <LinearGradient
                 locations={[0,0.6]}
                 colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.5)',]}
-                style={{backgroundColor: 'rgba(0,0,0,0)', paddingHorizontal: 20}}>
+                style={{backgroundColor: 'rgba(0,0,0,0)', paddingHorizontal: 10}}>
                 <Text style={styles.newscontainerTitulo}>{tema.nombre}</Text>
                 <Text style={styles.newscontainerResumen}>{tema.resumen}</Text>
                 <Text style={styles.newscontainerDate}>{fechaStr}</Text>
               </LinearGradient>
             }/>
           </View>
-          <View style={{ marginHorizontal: 20, marginTop: 20 }}>
+          <View style={{ marginHorizontal: 10, marginTop: 20 }}>
             <Text style={styles.newscontainerTexto}>{tema.contenido}</Text>
             {tema.preguntas.map(function(result, id){
+              var commentsSize = 0
+              var comments = this.props.estudio.commentsPeople.get(result.objectId)
+              if(typeof comments != 'undefined') { commentsSize = comments.size }
               return (
                 <View key={id} style={{marginTop:15}}>
                   <Text style={styles.newscontainerTexto}>{result.texto}</Text>
                   <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
-                  <TextInput value={this.state.comments[result.objectId]} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
-                  <TouchableOpacity onPress={this.tryComment.bind(this, result.objectId)}>
-                    <Text style={styles.comentar}>Comentar</Text>
-                  </TouchableOpacity>
+                  <TextInput value={this.state.comments[result.objectId].comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
+                  <View style={{flexDirection:'row'}}>
+                    <TouchableOpacity style={{flex:1}} onPress={this.comments.bind(this, result)}>
+                      <Text style={styles.vercomentarios}>Ver comentarios ({commentsSize})</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flex:1}} onPress={this.tryComment.bind(this, result.objectId)}>
+                      <Text style={styles.comentar}>Comentar</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
             }, this)}
@@ -162,6 +185,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     flex: 1,
     color: 'rgb(75,32,127)'
+  },
+  vercomentarios: {
+    fontSize: 13,
+    marginTop:3,
+    textAlign: 'left',
+    flex: 1,
+    color: 'rgb(75,32,127)'
   }
 })
 
@@ -175,7 +205,8 @@ function select(store) {
 function actions(dispatch) {
   return {
     saveUserComment: (id) => dispatch(saveUserComment(id)),
-    saveUserCommentLocally: (id, comment) => dispatch(saveUserCommentLocally(id, comment))
+    saveUserCommentLocally: (id, comment) => dispatch(saveUserCommentLocally(id, comment)),
+    fetchOtherUsersComments: (serieId, temaId) => dispatch(fetchOtherUsersComments(serieId, temaId))
   };
 }
 

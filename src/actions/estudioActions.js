@@ -13,6 +13,7 @@ const STUDIES_LOADING_ERROR = 'STUDIES_LOADING_ERROR';
 const STUDIES_RENDERED = 'STUDIES_RENDERED';
 const COMMENT_UPDATE = 'COMMENT_UPDATE';
 const COMMENT_POSTING = 'COMMENT_POSTING';
+const COMMENTS_PEOPLE_UPDATE = 'COMMENTS_PEOPLE_UPDATE';
 
 /*
  * action creators
@@ -66,6 +67,13 @@ function updateComments(comments) {
 function commentPosting() {
   return {
     type: COMMENT_POSTING
+  }
+}
+
+function commentsPeopleUpdate(comments) {
+  return {
+    type: COMMENTS_PEOPLE_UPDATE,
+    commentsPeople: comments
   }
 }
 
@@ -202,7 +210,7 @@ function fetchCommentsFromCloud() {
       success: function(results) {
         var comments = {}
         results.forEach(function(elem, index){
-          comments[elem.get("pregunta").id]=elem.get("comentario")
+          comments[elem.get("pregunta").id]={'comentario':elem.get("comentario"),'fecha':elem.get("createdAt")}
         });
         localRepository.saveComments(comments)
         dispatch(updateComments(comments));
@@ -270,4 +278,50 @@ function saveUserCommentLocally(id, comment) {
   }
 }
 
-module.exports = {loadStudies, fetchStudies, studiesLoading, studiesLoaded, studiesLoadingError, studiesRendered, saveUserComment, saveUserCommentLocally};
+function fetchOtherUsersComments(idSerie, idTema) {
+  return function(dispatch, getState) {
+    var Comentarios = Parse.Object.extend("Comentarios");
+    var Preguntas = Parse.Object.extend("Preguntas");
+    var query = new Parse.Query(Comentarios);
+    const { estudioReducer } = getState()
+    var preguntasArray = []
+
+    //Armamos el array de preguntas
+    estudioReducer.studies.forEach(function(serie,inS){
+      if(serie.id == idSerie) {
+        serie.temas.forEach(function(tema,inT){
+          if(tema.objectId == idTema) {
+            tema.preguntas.forEach(function(pregunta, inP){
+              var preguntaPointer = Preguntas.createWithoutData(pregunta.objectId);
+              preguntasArray.push(preguntaPointer)
+            });
+          }
+        });
+      }
+    });
+
+    query.include("usuario");
+    query.containedIn("pregunta", preguntasArray);
+    return query.find({
+      success: function(results) {
+        var comments = new Map()
+
+        results.forEach(function(comment, index){
+          var pregCommentsSet = comments.get(comment.get("pregunta").id)
+          if(pregCommentsSet == null) pregCommentsSet = new Set()
+          pregCommentsSet.add(comment)
+          comments.set(comment.get("pregunta").id, pregCommentsSet)
+        });
+
+        dispatch(commentsPeopleUpdate(comments))
+      },
+      error: function(error) {
+        console.log(error.stack)
+      }
+    }).catch(error => {
+      console.log(error.stack);
+    });
+  }
+}
+
+module.exports = {loadStudies, fetchStudies, studiesLoading, studiesLoaded, studiesLoadingError, studiesRendered, saveUserComment, saveUserCommentLocally, fetchOtherUsersComments};
