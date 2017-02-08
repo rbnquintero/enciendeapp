@@ -79,7 +79,6 @@ class EstudioListaTemasTemaComentarios extends Component {
             nombre={this.props.user.userData.nombre} />
           {Array.from(this.props.estudio.commentsPeople.get(pregunta.objectId)).map(function(elem,index){
             if(!this.props.user.isLoggedIn || this.props.user.userData.objectId != elem.get("usuario").id){
-              console.log(elem.get("createdAt"))
               return (
                 <CommentCard
                   key={index}

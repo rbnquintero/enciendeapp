@@ -11,7 +11,7 @@ var esLocale = require('moment/locale/es')
 class CommentCard extends Component {
   render() {
     var fecha = new Date(this.props.fecha);
-    var fechaStr = moment(fecha).locale("es", esLocale).format('LL');
+    var fechaStr = moment(fecha).locale("es", esLocale).fromNow();
     return (
       <View style={{flexDirection:'row', marginVertical:5}}>
         <Image style={styles.photo} source={{uri:this.props.foto}}/>

@@ -60,7 +60,7 @@ class MainView extends Component {
     } else if (this.props.nav.pantalla === 'versiculos') {
         component = (<Versiculos closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'oracion') {
-        component = (<Oracion closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
+        component = (<Oracion closeDrawer={this.closeDrawer} openDrawer={this.openDrawer} goToLogIn={this.goToLogIn}/>)
     } else if (this.props.nav.pantalla === 'calendario') {
         component = (<Sample closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
     } else if (this.props.nav.pantalla === 'sample') {

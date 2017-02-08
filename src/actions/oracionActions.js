@@ -58,8 +58,10 @@ function fetchItems(showLoading) {
       dispatch(itemsLoading());
     }
 
-    var Peticion = Parse.Object.extend("Peticion");
-    var query = new Parse.Query(Peticion);
+    var Oracion = Parse.Object.extend("Oracion");
+    var query = new Parse.Query(Oracion);
+    query.include("usuario")
+    query.descending("createdAt")
     return query.find({
       success: function(results) {
         var pedidos = JSON.parse(JSON.stringify(results))
@@ -78,4 +80,26 @@ function fetchItems(showLoading) {
   }
 }
 
-module.exports = {loadItems, fetchItems, itemsLoading, itemsLoaded, itemsLoadingError, itemsRendered};
+function enviarPeticion(anonima, peticion) {
+  return function(dispatch, getState) {
+    const { userReducer } = getState();
+    var Oracion = Parse.Object.extend("Oracion");
+    var peticionObj = new Oracion();
+    if(!anonima && userReducer.isLoggedIn) {
+      var Usuario = Parse.Object.extend("Usuario");
+      var usuarioObj = Usuario.createWithoutData(userReducer.userData.objectId);
+      peticionObj.set("usuario", usuarioObj)
+    }
+    peticionObj.set("peticion", peticion)
+    peticionObj.save(null, {
+      success: function(peticion) {
+        dispatch(fetchItems(false))
+      },
+      error: function(peticion, error) {
+        alert('Failed to create new object, with error code: ' + error.message);
+      }
+    });
+  }
+}
+
+module.exports = {loadItems, fetchItems, itemsLoading, itemsLoaded, itemsLoadingError, itemsRendered, enviarPeticion};

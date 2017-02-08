@@ -1,12 +1,19 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   RefreshControl,
   ScrollView,
   Text,
+  TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native'
 import Header from '../components/common/Header';
 import Loader from '../components/common/Loader';
+import CommentCard from '../components/common/CommentCard';
+var environment = require('../../utils/environment')
+
+import CheckBox from 'react-native-check-box';
 
 var moment = require('moment');
 var esLocale = require('moment/locale/es');
@@ -16,12 +23,36 @@ var { connect } = require('react-redux');
 var {
   loadItems,
   itemsRendered,
+  enviarPeticion,
 } = require('../../actions');
 
 class Oracion extends Component {
+  state = { peticion:'', anonima:false }
 
   componentWillMount() {
     this.props.loadItems();
+  }
+
+  comment() {
+    this.props.enviarPeticion(this.state.anonima, this.state.peticion);
+    this.setState({ peticion:'', anonima:false })
+  }
+
+  tryComment() {
+    if(this.state.peticion.length > 0) {
+      if(!this.props.user.isLoggedIn && !this.state.anonima) {
+        Alert.alert(
+          'Comentar',
+          'Para compartir tu petición es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
+          [
+            {text: 'Enviar como anónimo', onPress: () => this.comment()},
+            {text: 'Iniciar sesión', onPress: () => {this.props.goToLogIn(() => this.comment())} },
+          ]
+        )
+      } else {
+        this.comment()
+      }
+    }
   }
 
   render() {
@@ -30,7 +61,7 @@ class Oracion extends Component {
     if(this.props.oracion.items != null) {
       list = (
         <ScrollView
-          style={{backgroundColor: 'rgba(0,0,0,0.1)', padding:10}}
+          style={{backgroundColor: 'rgba(0,0,0,0.1)', paddingHorizontal:10}}
           showsVerticalScrollIndicator={false}
           directionalLockEnabled={true}
           refreshControl={
@@ -40,20 +71,22 @@ class Oracion extends Component {
               tintColor='rgba(255,255,255,0.7)'
             />
           }>
-          {this.props.oracion.items.map(function(result, id){
-            var fechaStr = moment(new Date(result.creacion.iso)).locale("es", esLocale).fromNow()
-            if(result.mostrar) {
-              return (
-                <View key={id} style={{marginVertical:10}}>
-                  <View style={{flexDirection:'row'}}>
-                    <Text style={{fontWeight:'bold'}}>{result.nombre}</Text><Text> dijo: </Text>
-                  </View>
-                  <Text style={{marginVertical:5, fontSize:20}}>{result.pedido}</Text>
-                  <Text style={{fontSize:10}}>{fechaStr}</Text>
-                </View>
-              );
+          {this.props.oracion.items.map(function(elem, index){
+            var fotoUrl = 'profile'
+            var nombre = 'Anónimo'
+            if (elem.usuario != null) {
+              nombre = elem.usuario.nombre
+              fotoUrl = environment.facebookURL + elem.usuario.id_facebook + '/picture?height=200&access_token=' + this.props.user.token
             }
-          })}
+            return (
+              <CommentCard
+                key={index}
+                foto={fotoUrl}
+                comentario={elem.peticion}
+                fecha={elem.createdAt}
+                nombre={nombre} />
+            );
+          }, this)}
         </ScrollView>
       )
     } else {
@@ -88,6 +121,24 @@ class Oracion extends Component {
             onPress: this.props.openDrawer,
           }}/>
           <View style={{ flex: 1 }}>
+            <View style={{padding:10}}>
+              <Text style={styles.verse}>Por eso, confiésense unos a otros sus pecados, y oren unos por otros, para que sean sanados. La oración del justo es poderosa y eficaz.</Text>
+              <Text style={styles.verse}>(Santiago 5:16)</Text>
+              <Text style={styles.desc}>Si deseas que oremos por alguna petición, escríbela abajo</Text>
+              <TextInput value={this.state.peticion} multiline={true} style={styles.respuestaBox} onChangeText={peticion => this.setState({ peticion }) }/>
+              <View style={{flexDirection:'row', alignItems:'center', marginVertical:10}}>
+                <CheckBox
+                  style={{flex: 1}}
+                  onClick={()=> {this.setState({ anonima: !this.state.anonima }) }}
+                  isChecked={this.state.anonima}
+                  rightText='Quiero que sea anónima'
+                  rightTextStyle={styles.vercomentarios}
+                />
+                <TouchableOpacity onPress={this.tryComment.bind(this)}>
+                  <Text style={styles.comentar}>Oren por mi</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
             {list}
           </View>
       </View>
@@ -95,9 +146,40 @@ class Oracion extends Component {
   }
 }
 
+const styles = {
+  verse: {
+    fontSize: 13,
+    textAlign: 'center',
+    color: '#333333'
+  },
+  desc: {
+    fontSize: 13,
+    paddingVertical: 10,
+    textAlign: 'left',
+    color: '#333333'
+  },
+  respuestaBox: {
+    height: 80, borderColor:'#cccccc',borderWidth: 1,borderRadius: 4, padding:7
+  },
+  comentar: {
+    fontSize: 13,
+    marginTop:3,
+    textAlign: 'right',
+    color: 'rgb(75,32,127)'
+  },
+  vercomentarios: {
+    fontSize: 13,
+    marginTop:3,
+    textAlign: 'left',
+    flex: 1,
+    color: '#333333'
+  }
+}
+
 function select(store) {
   return {
     oracion: store.oracionReducer,
+    user: store.userReducer,
   };
 }
 
@@ -105,6 +187,7 @@ function actions(dispatch) {
   return {
     loadItems: () => dispatch(loadItems()),
     itemsRendered: () => dispatch(itemsRendered()),
+    enviarPeticion: (anonima, peticion) => dispatch(enviarPeticion(anonima, peticion))
   };
 }
 
