@@ -38,9 +38,11 @@ class Versiculos extends Component {
             />
           }>
           {this.props.fb.versiculos.map(function(result, id){
-            return (
-              <VersiculoCard key={id} data={result}/>
-            );
+            if(result.attachments != null) {
+              return (
+                <VersiculoCard key={id} data={result}/>
+              );
+            }
           })}
         </ScrollView>
       )

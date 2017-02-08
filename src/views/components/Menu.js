@@ -88,6 +88,7 @@ class Menu extends Component {
     var calendario = (
       <MenuItem titulo="Calendario" icon={{uri:'icon_calendar'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toCalendario();}}/>
     );
+    calendario = null;
 
     selected = false;
     if(this.props.nav.pantalla === 'biblia') {
