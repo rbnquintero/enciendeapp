@@ -104,33 +104,47 @@ function fetchStudies(showLoading) {
     query.descending("serie.fecha");
     query.descending("fecha");
     return query.find({
-      success: function(results) {
-        var studies = JSON.parse(JSON.stringify(results))
+      success: function(studies) {
         var seriesSet = new Set()
         var temasIds = []
         studies.forEach(function(elem, index){
           var serie
           for (let serieIt of seriesSet) {
-            if(serieIt['id'] == elem.serie.objectId) serie = serieIt
+            if(serieIt['id'] == elem.get("serie").id) serie = serieIt
           }
           if(serie == null) {
             serie = {
-              id:elem.serie.objectId,
-              titulo:elem.serie.nombre,
-              resumen:elem.serie.descripcion,
-              fecha:elem.serie.fecha,
-              imagen:elem.serie.imagen,
-              introduccion:elem.serie.introduccion
+              id: elem.get("serie").id,
+              titulo: elem.get("serie").get("nombre"),
+              resumen: elem.get("serie").get("descripcion"),
+              fecha: { 'iso': elem.get("serie").get("fecha") },
+              imagen: { 'url': elem.get("serie").get("imagen")._url },
+              introduccion: elem.get("serie").get("introduccion")
             }
           }
 
           var temas = serie['temas']
           if(temas == null) temas = []
-          elem['preguntas'] = []
-          temas.push(elem)
+          var tema = {
+            'id': elem.id,
+            'nombre': elem.get("nombre"),
+            'resumen': elem.get("resumen"),
+            'contenido': elem.get("contenido"),
+            'fecha': elem.get("fecha"),
+            'serie': {
+              id: elem.get("serie").id,
+              titulo: elem.get("serie").get("nombre"),
+              resumen: elem.get("serie").get("descripcion"),
+              fecha: { 'iso': elem.get("serie").get("fecha") },
+              imagen: { 'url': elem.get("serie").get("imagen")._url },
+              introduccion: elem.get("serie").get("introduccion")
+            }
+          }
+          tema['preguntas'] = []
+          temas.push(tema)
           serie['temas']=temas
 
-          temasIds.push(elem.objectId)
+          temasIds.push(tema.id)
 
           seriesSet.add(serie)
         });
@@ -159,13 +173,17 @@ function fetchPreguntas(temasIds) {
     query.ascending("tema");
     query.ascending("order");
     return query.find({
-      success: function(results) {
-        var preguntas = JSON.parse(JSON.stringify(results))
+      success: function(preguntas) {
         var series = estudioReducer.studies
         series.forEach(function(serie,indexS){
           serie.temas.forEach(function(tema,indexT){
-            preguntas.forEach(function(pregunta,indexP){
-              if(pregunta.tema.objectId == tema.objectId) {
+            preguntas.forEach(function(elem,indexP){
+              if(elem.get("tema").id == tema.id) {
+                var pregunta = {
+                  'id': elem.id,
+                  'texto': elem.get("texto"),
+                  'pregunta': elem.get("pregunta")
+                }
                 tema.preguntas.push(pregunta)
               }
             });
@@ -249,15 +267,24 @@ function saveUserComment(id) {
 
           if(results.length > 0) {
             comentario = results[0]
-            comentario.set("comentario", comment)
+            comentario.set("comentario", comment.comentario)
           } else {
             comentario = new Comentarios();
             comentario.set("pregunta", pregunta)
             comentario.set("usuario", usuario)
-            comentario.set("comentario", comment)
+            comentario.set("comentario", comment.comentario)
           }
           comentario.save();
 
+          estudioReducer.studies.forEach(function(serie,inS){
+            serie.temas.forEach(function(tema,inT){
+              tema.preguntas.forEach(function(pregunta, inP){
+                if(pregunta.id == id) {
+                  dispatch(fetchOtherUsersComments(serie.id, tema.id))
+                }
+              });
+            });
+          });
         },
         error: function(error) {
           console.log(error.stack)
@@ -275,7 +302,7 @@ function saveUserCommentLocally(id, comment) {
       if(comments == null) {
         comments = {}
       }
-      comments[id]=comment
+      comments[id]= {'comentario':comment, 'fecha': new Date()}
       localRepository.saveComments(comments)
     });
   }
@@ -293,9 +320,9 @@ function fetchOtherUsersComments(idSerie, idTema) {
     estudioReducer.studies.forEach(function(serie,inS){
       if(serie.id == idSerie) {
         serie.temas.forEach(function(tema,inT){
-          if(tema.objectId == idTema) {
+          if(tema.id == idTema) {
             tema.preguntas.forEach(function(pregunta, inP){
-              var preguntaPointer = Preguntas.createWithoutData(pregunta.objectId);
+              var preguntaPointer = Preguntas.createWithoutData(pregunta.id);
               preguntasArray.push(preguntaPointer)
             });
           }

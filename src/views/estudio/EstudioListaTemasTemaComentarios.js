@@ -62,8 +62,8 @@ class EstudioListaTemasTemaComentarios extends Component {
     return (
       <CommentCard
         foto={environment.facebookURL + this.props.user.fbData.id + '/picture?height=200&access_token=' + this.props.user.token}
-        comentario={this.state.comments[this.props.pregunta.objectId].comentario}
-        fecha={this.state.comments[this.props.pregunta.objectId].fecha}
+        comentario={this.state.comments[this.props.pregunta.id].comentario}
+        fecha={this.state.comments[this.props.pregunta.id].fecha}
         nombre={this.props.user.userData.nombre} />);
   }
 
@@ -87,7 +87,7 @@ class EstudioListaTemasTemaComentarios extends Component {
         </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{flex:1, paddingHorizontal:10}}>
           {this.getUserComment()}
-          {Array.from(this.props.estudio.commentsPeople.get(pregunta.objectId)).map(function(elem,index){
+          {Array.from(this.props.estudio.commentsPeople.get(pregunta.id)).map(function(elem,index){
             if(!this.props.user.isLoggedIn || this.props.user.userData.objectId != elem.get("usuario").id){
               return (
                 <CommentCard

@@ -22,7 +22,7 @@ let store = createStore(reducers, applyMiddleware(thunkMiddleware, promise, logg
 
 var Parse = require('parse/react-native')
 Parse.initialize("HPry3wMRFE8fulZJQmvpbSAAPRJSgpMOpiDr5GqB", "kwEYlmoTBP98IqHgDbXaH3ZOyQnTi1kKafRCxjLk");
-Parse.serverURL = 'https://parseapi.back4app.com/'
+Parse.serverURL = 'https://parseapi.back4app.com'
 
 class app extends Component {
   render() {

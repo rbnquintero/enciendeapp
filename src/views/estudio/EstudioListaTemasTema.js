@@ -31,7 +31,7 @@ class EstudioListaTemasTema extends Component {
 
   componentDidMount() {
     var tema = this.props.tema
-    this.props.fetchOtherUsersComments(tema.serie.objectId,tema.objectId)
+    this.props.fetchOtherUsersComments(tema.serie.id,tema.id)
   }
 
   changeValue(id, value) {
@@ -58,7 +58,6 @@ class EstudioListaTemasTema extends Component {
   }
 
   tryComment(id) {
-    console.log(this.state.comments[id])
     if(this.state.comments[id] != null && this.state.comments[id].comentario.length > 0) {
       if(this.props.user.isLoggedIn) {
         this.postComment(id)
@@ -109,20 +108,20 @@ class EstudioListaTemasTema extends Component {
             <Text style={styles.newscontainerTexto}>{tema.contenido}</Text>
             {tema.preguntas.map(function(result, id){
               var commentsSize = 0
-              var comments = this.props.estudio.commentsPeople.get(result.objectId)
+              var comments = this.props.estudio.commentsPeople.get(result.id)
               if(typeof comments != 'undefined') { commentsSize = comments.size }
-              var comentario = this.state.comments[result.objectId]!= null ? this.state.comments[result.objectId].comentario : ''
+              var comentario = this.state.comments[result.id]!= null ? this.state.comments[result.id].comentario : ''
 
               return (
                 <View key={id} style={{marginTop:15}}>
                   <Text style={styles.newscontainerTexto}>{result.texto}</Text>
                   <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
-                  <TextInput value={comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.objectId, text)}/>
+                  <TextInput value={comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.id, text)}/>
                   <View style={{flexDirection:'row'}}>
                     <TouchableOpacity style={{flex:1}} onPress={this.comments.bind(this, result)}>
                       <Text style={styles.vercomentarios}>Ver comentarios ({commentsSize})</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{flex:1}} onPress={this.tryComment.bind(this, result.objectId)}>
+                    <TouchableOpacity style={{flex:1}} onPress={this.tryComment.bind(this, result.id)}>
                       <Text style={styles.comentar}>Comentar</Text>
                     </TouchableOpacity>
                   </View>

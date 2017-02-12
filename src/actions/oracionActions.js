@@ -64,8 +64,19 @@ function fetchItems(showLoading) {
     query.descending("createdAt")
     return query.find({
       success: function(results) {
-        var pedidos = JSON.parse(JSON.stringify(results))
-
+        var pedidos = []
+        results.forEach(function(elem, index){
+          var pedido = {
+            'id': elem.id,
+            'createdAt': elem.get("createdAt"),
+            'peticion': elem.get("peticion"),
+            'usuario': elem.get("usuario") != null ? {
+              'id_facebook': elem.get("usuario").get("id_facebook"),
+              'nombre': elem.get("usuario").get("nombre")
+            } : null
+          }
+          pedidos.push(pedido)
+        });
         localRepository.saveOracion(pedidos);
         dispatch(itemsLoaded(pedidos));
       },
