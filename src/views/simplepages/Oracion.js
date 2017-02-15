@@ -13,7 +13,7 @@ import Loader from '../components/common/Loader';
 import CommentCard from '../components/common/CommentCard';
 var environment = require('../../utils/environment')
 
-import CheckBox from 'react-native-check-box';
+import { CheckboxField, Checkbox } from 'react-native-checkbox-field';
 
 var moment = require('moment');
 var esLocale = require('moment/locale/es');
@@ -64,6 +64,7 @@ class Oracion extends Component {
           style={{backgroundColor: 'rgba(0,0,0,0.1)', paddingHorizontal:10}}
           showsVerticalScrollIndicator={false}
           directionalLockEnabled={true}
+          keyboardShouldPersistTaps="always"
           refreshControl={
             <RefreshControl
               refreshing={this.props.oracion.isFetching}
@@ -110,6 +111,7 @@ class Oracion extends Component {
       }
     }
 
+    const defaultColor = '#fff';
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -127,13 +129,20 @@ class Oracion extends Component {
               <Text style={styles.desc}>Si deseas que oremos por alguna petición, escríbela abajo</Text>
               <TextInput value={this.state.peticion} multiline={true} style={styles.respuestaBox} onChangeText={peticion => this.setState({ peticion }) }/>
               <View style={{flexDirection:'row', alignItems:'center', marginVertical:10}}>
-                <CheckBox
-                  style={{flex: 1}}
-                  onClick={()=> {this.setState({ anonima: !this.state.anonima }) }}
-                  isChecked={this.state.anonima}
-                  rightText='Quiero que sea anónima'
-                  rightTextStyle={styles.vercomentarios}
-                />
+                <View style={{flex: 1, flexDirection:'row', alignItems:'center'}}>
+                  <CheckboxField
+                    onSelect={()=> {this.setState({ anonima: !this.state.anonima }) }}
+                    defaultColor={defaultColor}
+                    selectedColor='rgb(75,32,127)'
+                    containerStyle={styles.containerStyle}
+                    checkboxStyle={styles.checkboxStyle}
+                    selected={this.state.anonima}>
+                    <Text style={{ color: defaultColor }}>✓</Text>
+                  </CheckboxField>
+                  <Text style={[styles.comentar, {color: '#333333', paddingLeft:5}]}>
+                    Quiero que sea anónima
+                  </Text>
+                </View>
                 <TouchableOpacity onPress={this.tryComment.bind(this)}>
                   <Text style={styles.comentar}>Oren por mi</Text>
                 </TouchableOpacity>
@@ -173,6 +182,21 @@ const styles = {
     textAlign: 'left',
     flex: 1,
     color: '#333333'
+  },
+  containerStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  labelStyle: {
+    flex: 1
+  },
+  checkboxStyle: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: '#ddd',
+    borderRadius: 5
   }
 }
 
