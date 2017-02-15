@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Header from '../components/common/Header'
 import LoaderSmall from '../components/common/LoaderSmall'
 var moment = require('moment')
@@ -157,6 +158,7 @@ class EstudioListaTemasTema extends Component {
                 </View>
               );
             }, this)}
+            <KeyboardSpacer />
             <View style={{height:35}}/>
           </View>
         </ScrollView>

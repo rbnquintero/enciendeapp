@@ -58,10 +58,10 @@ class FacebookLogin extends Component {
       if(this.props.user.error!=null) {
         error = (
           <View style={{marginTop:20}}>
-            <Text style={[ styles.texto, { fontSize: normalize(13) }]}>
+            <Text style={[ styles.texto, { fontSize: 13 }]}>
               Ocurrió un error al iniciar sesión: {this.props.user.error}
             </Text>
-            <Text style={[ styles.texto, { fontSize: normalize(13) }]}>
+            <Text style={[ styles.texto, { fontSize: 13 }]}>
               Por favor inténtalo nuevamente
             </Text>
           </View>
@@ -70,10 +70,10 @@ class FacebookLogin extends Component {
       // Pantalla de log in con facebook
       loginSection = (
       <View style={styles.centerAlign}>
-        <Text style={[ styles.texto, { fontSize: normalize(26) }]}>
+        <Text style={[ styles.texto, { fontSize: 26 }]}>
           ¡Bienvenido!
         </Text>
-        <Text style={[ styles.texto, { fontSize: normalize(16) }]}>
+        <Text style={[ styles.texto, { fontSize: 16 }]}>
           Inicia sesión para conocer más sobre el Rally Enciende 2016. Descubre noticias y entérate de los próximos eventos.
         </Text>
         {error}
@@ -81,7 +81,7 @@ class FacebookLogin extends Component {
           underlayColor='#99d9f4'>
           <View style={ styles.botonFacebook }>
             <Image source={{uri:'flogo'}} style={ styles.logoFacebook }/>
-            <Text style={[ styles.buttonText, { fontSize: normalize(13), fontWeight: '800', marginLeft: 10 } ]}>
+            <Text style={[ styles.buttonText, { fontSize: 13, fontWeight: '800', marginLeft: 10 } ]}>
               INICIAR SESIÓN CON FACEBOOK
             </Text>
           </View>
@@ -92,7 +92,7 @@ class FacebookLogin extends Component {
       if(!this.props.user.isRegistered && false) {
         loginSection = (
           <View style={[ styles.centerAlign ]}>
-            <Text style={[ styles.texto, { fontSize: normalize(16) }]}>
+            <Text style={[ styles.texto, { fontSize: 16 }]}>
               Ahora ingresa el código que te fue asignado por correo electrónico cuando te inscribiste al rally.
               Si no tienes código, contáctanos para asignarte uno.
             </Text>
@@ -106,7 +106,7 @@ class FacebookLogin extends Component {
           <TouchableHighlight style={ styles.button } onPress={() => this.props.registerUser(this.props.user, this.state.userCode)}
             underlayColor='#99d9f4'>
             <View style={{flexDirection: 'row'}}>
-              <Text style={[ styles.buttonText, { fontSize: normalize(18), fontWeight: '800' } ]}>
+              <Text style={[ styles.buttonText, { fontSize: 18, fontWeight: '800' } ]}>
                 REGISTRAR
               </Text>
             </View>
@@ -116,7 +116,7 @@ class FacebookLogin extends Component {
         // El usuario ya inició sesión
         loginSection = (
           <View style={[ styles.centerAlign ]}>
-            <Text style={[ styles.texto, { fontSize: normalize(26) }]}>
+            <Text style={[ styles.texto, { fontSize: 26 }]}>
               ¡Bienvenido!</Text>
           </View>
         );
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', marginTop: 20, backgroundColor: 'white', borderRadius: 5,
   },
   botonFacebook: {
-    flexDirection: 'row', alignItems: 'center', paddingTop: normalize(5)
+    flexDirection: 'row', alignItems: 'center', paddingTop: 5
   },
   centerAlign: {
     flex: 2, alignItems: 'center',
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     color:'white', textAlign: 'center', marginLeft: 10, marginVertical: 5
   },
   button: {
-    backgroundColor: 'rgb(59,89,152)', borderRadius: 5, alignItems: 'center', height: normalize(40), left: 30, right: 30, bottom: 30, position: 'absolute'
+    backgroundColor: 'rgb(59,89,152)', borderRadius: 5, alignItems: 'center', height: 40, left: 30, right: 30, bottom: 30, position: 'absolute'
   },
 });
 
