@@ -6,7 +6,7 @@ export type State = {
   error: ?string;
   studies: ?Object;
   comments: ?Object;
-  commentPosting: boolean;
+  commentPosting: ?string;
   commentsPeople: ?Object;
   pendingRendering: boolean;
 };
@@ -16,7 +16,7 @@ const initialState = {
   error: null,
   studies: null,
   comments: {},
-  commentPosting: false,
+  commentPosting: null,
   commentsPeople: new Map(),
   pendingRendering: false,
 };
@@ -100,7 +100,7 @@ function estudioReducer(state: State = initialState, action): State {
       error: state.error,
       studies: state.studies,
       comments: action.comments,
-      commentPosting: false,
+      commentPosting: null,
       commentsPeople: state.commentsPeople,
       pendingRendering: state.pendingRendering,
     }
@@ -110,7 +110,7 @@ function estudioReducer(state: State = initialState, action): State {
       error: state.error,
       studies: state.studies,
       comments: state.comments,
-      commentPosting: true,
+      commentPosting: action.comentId,
       commentsPeople: state.commentsPeople,
       pendingRendering: state.pendingRendering,
     }
@@ -120,7 +120,7 @@ function estudioReducer(state: State = initialState, action): State {
       error: state.error,
       studies: state.studies,
       comments: state.comments,
-      commentPosting: state.commentPosting,
+      commentPosting: null,
       commentsPeople: action.commentsPeople,
       pendingRendering: state.pendingRendering,
     }

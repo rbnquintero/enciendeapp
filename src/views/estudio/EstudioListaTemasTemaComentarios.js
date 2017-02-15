@@ -22,51 +22,6 @@ var {
 } = require('../../actions');
 
 class EstudioListaTemasTemaComentarios extends Component {
-  state = { comments:this.props.estudio.comments }
-
-  changeValue(id, value) {
-    var comments = this.state.comments
-    comments[id]=value
-    this.props.saveUserCommentLocally(id, value)
-    if(this.props.user.isLoggedIn){
-      this.props.saveUserComment(id)
-    }
-    this.setState({comments: comments})
-  }
-
-  postComment(id) {
-    this.props.saveUserComment(id)
-  }
-
-  tryComment(id) {
-    if(this.state.comments[id] != null && this.state.comments[id].length > 0) {
-      if(this.props.user.isLoggedIn) {
-        this.postComment(id)
-      } else {
-        Alert.alert(
-          'Comentar',
-          'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
-          [
-            {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
-            {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
-          ]
-        )
-      }
-    }
-  }
-
-  getUserComment() {
-    if(!this.props.user.isLoggedIn) {
-      return null;
-    }
-    return (
-      <CommentCard
-        foto={environment.facebookURL + this.props.user.fbData.id + '/picture?height=200&access_token=' + this.props.user.token}
-        comentario={this.state.comments[this.props.pregunta.id].comentario}
-        fecha={this.state.comments[this.props.pregunta.id].fecha}
-        nombre={this.props.user.userData.nombre} />);
-  }
-
   render() {
     var width = Dimensions.get('window').height;
     var height = width / 3;
@@ -86,18 +41,15 @@ class EstudioListaTemasTemaComentarios extends Component {
           <Text style={styles.newscontainerPregunta}>{pregunta.pregunta}</Text>
         </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{flex:1, paddingHorizontal:10}}>
-          {this.getUserComment()}
           {Array.from(this.props.estudio.commentsPeople.get(pregunta.id)).map(function(elem,index){
-            if(!this.props.user.isLoggedIn || this.props.user.userData.objectId != elem.get("usuario").id){
-              return (
-                <CommentCard
-                  key={index}
-                  foto={environment.facebookURL + elem.get("usuario").get("id_facebook") + '/picture?height=200&access_token=' + this.props.user.token}
-                  comentario={elem.get("comentario")}
-                  fecha={elem.get("createdAt")}
-                  nombre={elem.get("usuario").get("nombre")} />
-              );
-            }
+            return (
+              <CommentCard
+                key={index}
+                foto={environment.facebookURL + elem.get("usuario").get("id_facebook") + '/picture?height=200&access_token=' + this.props.user.token}
+                comentario={elem.get("comentario")}
+                fecha={elem.get("createdAt")}
+                nombre={elem.get("usuario").get("nombre")} />
+            );
           }, this)}
         </ScrollView>
       </View>

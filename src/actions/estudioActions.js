@@ -64,9 +64,10 @@ function updateComments(comments) {
   }
 }
 
-function commentPosting() {
+function commentPosting(comentId) {
   return {
-    type: COMMENT_POSTING
+    type: COMMENT_POSTING,
+    comentId: comentId
   }
 }
 
@@ -245,11 +246,10 @@ function fetchCommentsFromCloud() {
   }
 }
 
-function saveUserComment(id) {
+function saveUserComment(id, comment) {
   return function(dispatch, getState) {
-    dispatch(commentPosting());
+    dispatch(commentPosting(id));
     const { estudioReducer, userReducer } = getState()
-    var comment = estudioReducer.comments[id]
     if(typeof comment !='undefined') {
       // aditional parse structuring
       var Usuario = Parse.Object.extend("Usuario");
@@ -258,24 +258,12 @@ function saveUserComment(id) {
       var usuario = Usuario.createWithoutData(userReducer.userData.objectId);
 
       var Comentarios = Parse.Object.extend("Comentarios");
-      var query = new Parse.Query(Comentarios);
-      query.equalTo("pregunta", pregunta);
-      query.equalTo("usuario", usuario);
-      return query.find({
-        success: function(results) {
-          var comentario = null
-
-          if(results.length > 0) {
-            comentario = results[0]
-            comentario.set("comentario", comment.comentario)
-          } else {
-            comentario = new Comentarios();
-            comentario.set("pregunta", pregunta)
-            comentario.set("usuario", usuario)
-            comentario.set("comentario", comment.comentario)
-          }
-          comentario.save();
-
+      var comentario = new Comentarios();
+      comentario.set("pregunta", pregunta)
+      comentario.set("usuario", usuario)
+      comentario.set("comentario", comment)
+      comentario.save(null, {
+        success: function(comentario) {
           estudioReducer.studies.forEach(function(serie,inS){
             serie.temas.forEach(function(tema,inT){
               tema.preguntas.forEach(function(pregunta, inP){
@@ -286,11 +274,9 @@ function saveUserComment(id) {
             });
           });
         },
-        error: function(error) {
-          console.log(error.stack)
+        error: function(comentario, error) {
+          console.log('Failed to create new object, with error code: ' + error.message);
         }
-      }).catch(error => {
-        console.log(error.stack);
       });
     }
   }
@@ -331,6 +317,7 @@ function fetchOtherUsersComments(idSerie, idTema) {
     });
 
     query.include("usuario");
+    query.descending("createdAt");
     query.containedIn("pregunta", preguntasArray);
     return query.find({
       success: function(results) {

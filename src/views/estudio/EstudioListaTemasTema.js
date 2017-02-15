@@ -3,6 +3,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  LayoutAnimation,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +12,7 @@ import {
   View
 } from 'react-native'
 import Header from '../components/common/Header'
+import LoaderSmall from '../components/common/LoaderSmall'
 var moment = require('moment')
 var esLocale = require('moment/locale/es')
 import EstudioListaTemasTemaComentarios from './EstudioListaTemasTemaComentarios'
@@ -22,12 +24,11 @@ import LinearGradient from 'react-native-linear-gradient';
 var { connect } = require('react-redux');
 var {
   saveUserComment,
-  saveUserCommentLocally,
   fetchOtherUsersComments,
 } = require('../../actions');
 
 class EstudioListaTemasTema extends Component {
-  state = { comments:this.props.estudio.comments }
+  state = { comments:{}, openBoxes:{} }
 
   componentDidMount() {
     var tema = this.props.tema
@@ -37,15 +38,18 @@ class EstudioListaTemasTema extends Component {
   changeValue(id, value) {
     var comments = this.state.comments
     comments[id]={'comentario':value, 'fecha': new Date()}
-    this.props.saveUserCommentLocally(id, value)
-    if(this.props.user.isLoggedIn){
-      this.props.saveUserComment(id)
-    }
     this.setState({comments: comments})
   }
 
   postComment(id) {
-    this.props.saveUserComment(id)
+    LayoutAnimation.easeInEaseOut();
+    var comments = this.state.comments
+    var comment = comments[id].comentario
+    comments[id]=null
+    var openBoxes = this.state.openBoxes
+    openBoxes[id]=null
+    this.setState({comments: comments, openBoxes:openBoxes})
+    this.props.saveUserComment(id, comment)
   }
 
   comments(pregunta) {
@@ -58,19 +62,28 @@ class EstudioListaTemasTema extends Component {
   }
 
   tryComment(id) {
-    if(this.state.comments[id] != null && this.state.comments[id].comentario.length > 0) {
-      if(this.props.user.isLoggedIn) {
-        this.postComment(id)
-      } else {
-        Alert.alert(
-          'Comentar',
-          'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
-          [
-            {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
-            {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
-          ]
-        )
+    if(this.state.openBoxes[id] != null && this.state.openBoxes[id]) {
+      //Validate field
+      if(this.state.comments[id] != null && this.state.comments[id].comentario.length > 0) {
+        if(this.props.user.isLoggedIn) {
+          this.postComment(id)
+        } else {
+          Alert.alert(
+            'Comentar',
+            'Para compartir tu comentario es necesario iniciar sesión con facebook. ¿Deseas iniciar sesión?',
+            [
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+              {text: 'OK', onPress: () => {this.props.navigator.props.goToLogIn(() => this.postComment(id))} },
+            ]
+          )
+        }
       }
+    } else {
+      //Open box
+      LayoutAnimation.easeInEaseOut();
+      var openBoxes = this.state.openBoxes
+      openBoxes[id]=true
+      this.setState({openBoxes: openBoxes})
     }
   }
 
@@ -90,7 +103,7 @@ class EstudioListaTemasTema extends Component {
             icon: {uri:'back'},
             onPress: this.props.navigator.pop,
           }}/>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="always">
           <View>
             <FitImage source={{uri: tema.serie.imagen.url}} style={styles.newscontainer}
               ref={component => this._root = component} {...this.props} content={
@@ -111,17 +124,33 @@ class EstudioListaTemasTema extends Component {
               var comments = this.props.estudio.commentsPeople.get(result.id)
               if(typeof comments != 'undefined') { commentsSize = comments.size }
               var comentario = this.state.comments[result.id]!= null ? this.state.comments[result.id].comentario : ''
+              var textBox = null;
+              if(this.state.openBoxes[result.id] != null && this.state.openBoxes[result.id]) {
+                textBox = (
+                  <TextInput value={comentario} multiline={true}
+                    style={styles.respuestaBox}
+                    onChangeText={text => this.changeValue(result.id, text)}/>
+                );
+              }
+
+              var comentPosting = null;
+              if(this.props.estudio.commentPosting == result.id) {
+                comentPosting = (
+                  <LoaderSmall />
+                );
+              }
 
               return (
                 <View key={id} style={{marginTop:15}}>
                   <Text style={styles.newscontainerTexto}>{result.texto}</Text>
                   <Text style={styles.newscontainerPregunta}>{result.pregunta}</Text>
-                  <TextInput value={comentario} multiline={true} style={styles.respuestaBox} onChangeText={text => this.changeValue(result.id, text)}/>
+                  {textBox}
                   <View style={{flexDirection:'row'}}>
                     <TouchableOpacity style={{flex:1}} onPress={this.comments.bind(this, result)}>
                       <Text style={styles.vercomentarios}>Ver comentarios ({commentsSize})</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{flex:1}} onPress={this.tryComment.bind(this, result.id)}>
+                    <TouchableOpacity style={{flex:1, flexDirection:'row', justifyContent:'flex-end' }} onPress={this.tryComment.bind(this, result.id)}>
+                      {comentPosting}
                       <Text style={styles.comentar}>Comentar</Text>
                     </TouchableOpacity>
                   </View>
@@ -177,17 +206,16 @@ const styles = StyleSheet.create({
   },
   newscontainerPregunta: {
     fontSize: 13,
-    marginBottom: 10,
     marginTop: 5
   },
   respuestaBox: {
-    height: 80, flex:1, borderColor:'#cccccc',borderWidth: 1,borderRadius: 4, padding:7
+    height: 80, flex:1, borderColor:'#cccccc',borderWidth: 1,borderRadius: 4, padding:7, marginTop:5
   },
   comentar: {
     fontSize: 13,
     marginTop:3,
+    marginLeft:5,
     textAlign: 'right',
-    flex: 1,
     color: 'rgb(75,32,127)'
   },
   vercomentarios: {
@@ -208,8 +236,7 @@ function select(store) {
 
 function actions(dispatch) {
   return {
-    saveUserComment: (id) => dispatch(saveUserComment(id)),
-    saveUserCommentLocally: (id, comment) => dispatch(saveUserCommentLocally(id, comment)),
+    saveUserComment: (id, comment) => dispatch(saveUserComment(id, comment)),
     fetchOtherUsersComments: (serieId, temaId) => dispatch(fetchOtherUsersComments(serieId, temaId))
   };
 }
