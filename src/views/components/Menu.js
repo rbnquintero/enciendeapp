@@ -80,6 +80,7 @@ class Menu extends Component {
     var versiculos = (
       <MenuItem titulo="Versículo del día" icon={{uri:'icon_sun'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toVersiculos();}}/>
     );
+    versiculos = null;
 
     selected = false;
     if(this.props.nav.pantalla === 'calendario') {

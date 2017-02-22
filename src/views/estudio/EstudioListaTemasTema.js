@@ -89,10 +89,11 @@ class EstudioListaTemasTema extends Component {
   }
 
   render() {
+    console.log(this)
     var width = Dimensions.get('window').height;
     var height = width / 3;
     var tema = this.props.tema;
-    var fecha = new Date(tema.fecha.iso);
+    var fecha = new Date(tema.fecha);
     var fechaStr = moment(fecha).locale("es", esLocale).format('LL');
     return (
       <View style={{ flex: 1 }}>

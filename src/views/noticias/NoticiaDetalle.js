@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/common/Header'
 var moment = require('moment')
 var esLocale = require('moment/locale/es')
@@ -30,16 +31,22 @@ class NoticiaDetalle extends Component {
             icon: {uri:'back'},
             onPress: this.props.navigator.pop,
           }}/>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 20 }}>
+        <View>
           <Text style={styles.newscontainerTitulo}>{noticia.titulo}</Text>
           <Text style={styles.newscontainerResumen}>{noticia.resumen}</Text>
           <Text style={styles.newscontainerDate}>{fechaStr}</Text>
           <View style={styles.bar}/>
-          <TouchableOpacity onPress={() => this.toDetalleImagen()}>
-            <View style={styles.imagenContainer}>
-              <Image style={ [styles.imagen, { height: height, width: width }] } source={{ uri: noticia.imagen.url }} />
-            </View>
-          </TouchableOpacity>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.imagenContainer}>
+            <Image style={ [styles.imagen, { height: height, width: width }] } source={{ uri: noticia.imagen.url }}>
+              <LinearGradient
+                locations={[0.5,1]}
+                colors={['rgba(0,0,0,0)', 'rgba(255,255,255,1)',]}
+                style={{backgroundColor: 'rgba(0,0,0,0)', height: height }}>
+              </LinearGradient>
+            </Image>
+          </View>
 
           <Text style={styles.newscontainerTexto}>{noticia.noticia}</Text>
           <View style={{height:35}}/>
@@ -51,29 +58,29 @@ class NoticiaDetalle extends Component {
 
 const styles = StyleSheet.create({
   newscontainerTitulo: {
-    marginTop: 20,
+    marginTop: 10,
     fontWeight: 'bold',
     color: 'gray',
     textAlign: 'left',
     fontSize: 13,
+    marginHorizontal:10
   },
   newscontainerResumen: {
-    marginTop: 5,
-    marginBottom: 10,
     fontWeight: '500',
     textAlign: 'left',
     fontSize: 20,
+    marginHorizontal:10
   },
   newscontainerDate: {
     fontSize: 13,
     fontWeight: '400',
     color: '#a6a6a6',
+    marginHorizontal:10
   },
   bar: {
     borderColor: '#d9d9d9',
-    borderTopWidth: 1,
-    marginTop: 10,
-    marginBottom: 25,
+    borderTopWidth: 2,
+    marginTop: 5
   },
   imagenContainer: {
     flexDirection: 'row',
@@ -81,13 +88,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0)',
   },
   imagen: {
-    resizeMode: Image.resizeMode.contain,
+    resizeMode: Image.resizeMode.cover,
     flex: 1,
   },
   newscontainerTexto: {
-    marginVertical: 25,
+    marginVertical: 10,
     fontSize: 13,
-    fontWeight: '300'
+    fontWeight: '300',
+    marginHorizontal:10
   },
 })
 

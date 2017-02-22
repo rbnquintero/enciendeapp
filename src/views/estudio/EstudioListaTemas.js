@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   newscontainerTitulo: {
     marginTop: 20,
     fontWeight: 'bold',
-    color: 'rgba(0,0,0,0.6)',
+    color: '#eaeaea',
     textAlign: 'left',
     fontSize: 13,
   },
