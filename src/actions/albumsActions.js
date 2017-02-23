@@ -109,11 +109,11 @@ function fetchAlbumPhotos(albumId) {
           var photosArray = []
           json.data.forEach(function(item,index){
             var photo = {
-              'cover': item.images[2].source,
+              'cover': item.images[4].source,
               'name': ''
             }
             photos.push(photo)
-            photosArray.push(item.images[2].source)
+            photosArray.push(item.images[4].source)
           });
           albumPhotos[albumId] = photos;
           albumPhotosArrays[albumId] = photosArray;
