@@ -16,6 +16,7 @@
     "react-native-drawer": "^2.3.0",
     "react-native-fbsdk": "^0.5.0",
     "react-native-fs": "^2.1.0-rc.1",
+    "react-native-gallery": "0.0.17",
     "react-native-keyboard-spacer": "^0.3.1",
     "react-native-linear-gradient": "^2.0.0",
     "react-native-maps": "^0.12.4",

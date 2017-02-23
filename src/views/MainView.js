@@ -10,6 +10,7 @@ var FacebookLogin = require('./components/FacebookLogin')
 
 var Menu = require('./components/Menu');
 var NoticiasMain = require('./noticias/NoticiasMain');
+var FotosMain = require('./fotos/FotosMain');
 var EstudioMain = require('./estudio/EstudioMain');
 var Creencias = require('./webviews/Creencias');
 var Nosotros = require('./simplepages/Nosotros');
@@ -50,6 +51,8 @@ class MainView extends Component {
     var component = null;
     if (this.props.nav.pantalla === 'noticias') {
       component = (<NoticiasMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer}/>)
+    } else if (this.props.nav.pantalla === 'fotos') {
+        component = (<FotosMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer} goToLogIn={this.goToLogIn}/>)
     } else if (this.props.nav.pantalla === 'estudio') {
         component = (<EstudioMain closeDrawer={this.closeDrawer} openDrawer={this.openDrawer} goToLogIn={this.goToLogIn}/>)
     } else if (this.props.nav.pantalla === 'creencias') {

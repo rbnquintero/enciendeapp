@@ -2,6 +2,7 @@
  * action types
  */
 const PANTALLA_NOTICIAS = 'PANTALLA_NOTICIAS';
+const PANTALLA_FOTOS = 'PANTALLA_FOTOS';
 const PANTALLA_ESTUDIO = 'PANTALLA_ESTUDIO';
 const PANTALLA_CREENCIAS = 'PANTALLA_CREENCIAS';
 const PANTALLA_NOSOTROS = 'PANTALLA_NOSOTROS';
@@ -18,6 +19,12 @@ const PANTALLA_SAMPLE = 'PANTALLA_SAMPLE';
 function toNoticias() {
   return {
     type: PANTALLA_NOTICIAS
+  }
+}
+
+function toFotos() {
+  return {
+    type: PANTALLA_FOTOS
   }
 }
 
@@ -69,4 +76,4 @@ function toSamplePage() {
   }
 }
 
-module.exports = {toNoticias, toEstudio, toCreencias, toNosotros, toBiblia, toVersiculos, toOracion, toCalendario, toSamplePage}
+module.exports = {toNoticias, toFotos, toEstudio, toCreencias, toNosotros, toBiblia, toVersiculos, toOracion, toCalendario, toSamplePage}

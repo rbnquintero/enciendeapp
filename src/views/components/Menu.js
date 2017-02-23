@@ -16,6 +16,7 @@ import MenuUser from './MenuUser'
 var { connect } = require('react-redux');
 var {
   toNoticias,
+  toFotos,
   toNosotros,
   toBiblia,
   toEstudio,
@@ -47,6 +48,14 @@ class Menu extends Component {
     }
     var noticias = (
       <MenuItem titulo="Noticias enciende" icon={{uri:'icon_noticias'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toNoticias();}}/>
+    );
+
+    selected = false;
+    if(this.props.nav.pantalla === 'fotos') {
+      selected = true;
+    }
+    var fotos = (
+      <MenuItem titulo="Galería de fotos" icon={{uri:'icon_photos'}} selected={selected} action={() => {this.props.closeDrawer(); this.props.toFotos();}}/>
     );
 
     selected = false;
@@ -129,6 +138,7 @@ class Menu extends Component {
         <MenuUser iglesia={this.props.app.iglesia} user={this.props.user} goToLogIn={ this.goToLogIn.bind(this) }/>
         <ScrollView>
           {noticias}
+          {fotos}
           <View style={ styles.seccionTextContainer }>
             <Text style={ styles.seccionText }>Estudio</Text>
           </View>
@@ -186,6 +196,7 @@ function select(store) {
 function actions(dispatch) {
   return {
     toNoticias: () => dispatch(toNoticias()),
+    toFotos: () => dispatch(toFotos()),
     toEstudio: () => dispatch(toEstudio()),
     toCreencias: () => dispatch(toCreencias()),
     toNosotros: () => dispatch(toNosotros()),

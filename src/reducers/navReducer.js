@@ -14,6 +14,10 @@ function navigation(state: State = initialState, action): State {
     return {
       pantalla: 'noticias',
     }
+  } else if (action.type === 'PANTALLA_FOTOS') {
+    return {
+      pantalla: 'fotos',
+    }
   } else if (action.type === 'PANTALLA_ESTUDIO') {
     return {
       pantalla: 'estudio',
